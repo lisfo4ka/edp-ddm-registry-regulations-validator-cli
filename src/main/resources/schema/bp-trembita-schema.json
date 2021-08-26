@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "trembita": {
+      "type": "object",
+      "properties": {
+        "process_definitions": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "process_definition_id": {
+                  "type": "string"
+                },
+                "start_vars": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "return_vars": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "process_definition_id",
+                "start_vars",
+                "return_vars"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "process_definitions"
+      ]
+    }
+  },
+  "required": [
+    "trembita"
+  ]
+}

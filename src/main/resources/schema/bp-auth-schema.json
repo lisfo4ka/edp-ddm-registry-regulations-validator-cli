@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "authorization": {
+      "type": "object",
+      "properties": {
+        "realm": {
+          "type": "string"
+        },
+        "process_definitions": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "process_definition_id": {
+                  "type": "string"
+                },
+                "process_name": {
+                  "type": "string"
+                },
+                "process_description": {
+                  "type": "string"
+                },
+                "roles": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "process_definition_id",
+                "process_name",
+                "process_description",
+                "roles"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "realm",
+        "process_definitions"
+      ]
+    }
+  },
+  "required": [
+    "authorization"
+  ]
+}
