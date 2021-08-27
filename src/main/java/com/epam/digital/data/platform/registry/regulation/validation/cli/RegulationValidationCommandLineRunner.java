@@ -2,7 +2,6 @@ package com.epam.digital.data.platform.registry.regulation.validation.cli;
 
 import com.epam.digital.data.platform.registry.regulation.validation.RegulationValidatorFactory;
 import com.epam.digital.data.platform.registry.regulation.validation.model.RegulationFiles;
-import com.epam.digital.data.platform.registry.regulation.validation.model.ValidationError;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
 import org.springframework.boot.CommandLineRunner;
@@ -57,6 +56,8 @@ public class RegulationValidationCommandLineRunner implements CommandLineRunner 
   private void validate(RegulationFiles registryRegulationFiles) {
     var registryRegulationValidator = registryRegulationValidatorFactory.newRegistryRegulationFilesValidator();
 
+    log.info("Starting registry regulation validation...");
+
     var errors = registryRegulationValidator.validate(registryRegulationFiles);
 
     if (errors.isEmpty()) {
@@ -65,10 +66,7 @@ public class RegulationValidationCommandLineRunner implements CommandLineRunner 
       return;
     }
 
-    log.error("Registry regulation validation failure! See details below:");
-    for (ValidationError error : errors) {
-      log.error(error.toString());
-    }
+    log.error("Registry regulation validation failure!");
     systemExit.validationFailure();
   }
 

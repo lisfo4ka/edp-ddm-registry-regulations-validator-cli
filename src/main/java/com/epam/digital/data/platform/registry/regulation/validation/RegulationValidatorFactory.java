@@ -54,55 +54,77 @@ public class RegulationValidatorFactory {
     };
   }
 
+  private Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators(ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper) {
+    return Map.of(
+        RegulationFileType.BP_AUTH, loggingDecorator(
+            compositeValidator(
+                new FileExistenceValidator(),
+                new FileExtensionValidator(RegulationFileType.BP_AUTH),
+                new EmptyFileValidator(),
+                new JsonSchemaFileValidator(jsonSchemaOf(BP_AUTH_JSON_SCHEMA), yamlObjectMapper),
+                new BpAuthRulesValidator(yamlObjectMapper)
+            )
+        ),
+        RegulationFileType.BP_TREMBITA, loggingDecorator(
+            compositeValidator(
+                new FileExistenceValidator(),
+                new FileExtensionValidator(RegulationFileType.BP_TREMBITA),
+                new EmptyFileValidator(),
+                new JsonSchemaFileValidator(jsonSchemaOf(BP_TREMBITA_JSON_SCHEMA), yamlObjectMapper),
+                new BpTrembitaRulesValidator(yamlObjectMapper)
+            )
+        ),
+        RegulationFileType.ROLES, loggingDecorator(
+            compositeValidator(
+                new FileExistenceValidator(),
+                new FileExtensionValidator(RegulationFileType.ROLES),
+                new EmptyFileValidator(),
+                new JsonSchemaFileValidator(jsonSchemaOf(ROLES_JSON_SCHEMA), yamlObjectMapper)
+            )
+        ),
+        RegulationFileType.GLOBAL_VARS, loggingDecorator(
+            compositeValidator(
+                new FileExistenceValidator(),
+                new FileExtensionValidator(RegulationFileType.GLOBAL_VARS),
+                new EmptyFileValidator(),
+                new JsonSchemaFileValidator(jsonSchemaOf(GLOBAL_VARS_JSON_SCHEMA), yamlObjectMapper)
+            )
+        ),
+        RegulationFileType.FORMS, loggingDecorator(
+            compositeValidator(
+                new FileExistenceValidator(),
+                new FileExtensionValidator(RegulationFileType.FORMS),
+                new EmptyFileValidator(),
+                new JsonSyntaxFileValidator(jsonObjectMapper)
+            )
+        ),
+        RegulationFileType.BPMN, loggingDecorator(
+            compositeValidator(
+                new FileExistenceValidator(),
+                new FileExtensionValidator(RegulationFileType.BPMN),
+                new BpmnFileValidator()
+            )
+        ),
+        RegulationFileType.DMN, loggingDecorator(
+            compositeValidator(
+                new FileExistenceValidator(),
+                new FileExtensionValidator(RegulationFileType.DMN),
+                new DmnFileValidator()
+            )
+        )
+    );
+  }
+
   private RegulationValidator<File> validatorFor(RegulationFileType regulationFileType) {
     return this.regulationTypeValidators.get(regulationFileType);
   }
 
-  private Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators(ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper) {
-    return Map.of(
-        RegulationFileType.BP_AUTH, CompositeFileValidator.of(
-            new FileExistenceValidator(),
-            new FileExtensionValidator(RegulationFileType.BP_AUTH),
-            new EmptyFileValidator(),
-            new JsonSchemaFileValidator(jsonSchemaOf(BP_AUTH_JSON_SCHEMA), yamlObjectMapper),
-            new BpAuthRulesValidator(yamlObjectMapper)
-        ),
-        RegulationFileType.BP_TREMBITA, CompositeFileValidator.of(
-            new FileExistenceValidator(),
-            new FileExtensionValidator(RegulationFileType.BP_TREMBITA),
-            new EmptyFileValidator(),
-            new JsonSchemaFileValidator(jsonSchemaOf(BP_TREMBITA_JSON_SCHEMA), yamlObjectMapper),
-            new BpTrembitaRulesValidator(yamlObjectMapper)
-        ),
-        RegulationFileType.ROLES, CompositeFileValidator.of(
-            new FileExistenceValidator(),
-            new FileExtensionValidator(RegulationFileType.ROLES),
-            new EmptyFileValidator(),
-            new JsonSchemaFileValidator(jsonSchemaOf(ROLES_JSON_SCHEMA), yamlObjectMapper)
-        ),
-        RegulationFileType.GLOBAL_VARS, CompositeFileValidator.of(
-            new FileExistenceValidator(),
-            new FileExtensionValidator(RegulationFileType.GLOBAL_VARS),
-            new EmptyFileValidator(),
-            new JsonSchemaFileValidator(jsonSchemaOf(GLOBAL_VARS_JSON_SCHEMA), yamlObjectMapper)
-        ),
-        RegulationFileType.FORMS, CompositeFileValidator.of(
-            new FileExistenceValidator(),
-            new FileExtensionValidator(RegulationFileType.FORMS),
-            new EmptyFileValidator(),
-            new JsonSyntaxFileValidator(jsonObjectMapper)
-        ),
-        RegulationFileType.BPMN, CompositeFileValidator.of(
-            new FileExistenceValidator(),
-            new FileExtensionValidator(RegulationFileType.BPMN),
-            new BpmnFileValidator()
-        ),
-        RegulationFileType.DMN, CompositeFileValidator.of(
-            new FileExistenceValidator(),
-            new FileExtensionValidator(RegulationFileType.DMN),
-            new DmnFileValidator()
-        )
-    );
+  private RegulationValidator<File> loggingDecorator(RegulationValidator<File> validator) {
+    return new FileValidatorLoggingDecorator(validator);
+  }
+
+  private RegulationValidator<File> compositeValidator(RegulationValidator<File>... validators) {
+    return CompositeFileValidator.of(validators);
   }
 
   @SneakyThrows
