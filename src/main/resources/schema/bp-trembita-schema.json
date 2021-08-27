@@ -6,6 +6,7 @@
       "type": "object",
       "properties": {
         "process_definitions": {
+          "minItems": 0,
           "type": "array",
           "items": [
             {
@@ -16,6 +17,8 @@
                 },
                 "start_vars": {
                   "type": "array",
+                  "minItems": 0,
+                  "uniqueItems": true,
                   "items": [
                     {
                       "type": "string"
@@ -27,6 +30,8 @@
                 },
                 "return_vars": {
                   "type": "array",
+                  "minItems": 0,
+                  "uniqueItems": true,
                   "items": [
                     {
                       "type": "string"

@@ -1,6 +1,6 @@
 package com.epam.digital.data.platform.registry.regulation.validation.cli;
 
-import com.epam.digital.data.platform.registry.regulation.validation.RegistryRegulationValidatorFactory;
+import com.epam.digital.data.platform.registry.regulation.validation.RegulationValidatorFactory;
 import com.epam.digital.data.platform.registry.regulation.validation.model.RegulationFiles;
 import com.epam.digital.data.platform.registry.regulation.validation.model.ValidationError;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +13,11 @@ public class RegulationValidationCommandLineRunner implements CommandLineRunner 
   private final CommandLineArgsParser commandLineArgsParser;
   private final CommandLineOptionsConverter commandLineOptionsConverter;
 
-  private final RegistryRegulationValidatorFactory registryRegulationValidatorFactory;
+  private final RegulationValidatorFactory registryRegulationValidatorFactory;
 
   private final SystemExit systemExit;
 
-  public RegulationValidationCommandLineRunner(RegistryRegulationValidatorFactory registryRegulationValidatorFactory,
+  public RegulationValidationCommandLineRunner(RegulationValidatorFactory registryRegulationValidatorFactory,
       CommandLineArgsParser commandLineArgsParser, CommandLineOptionsConverter commandLineOptionsConverter,
       SystemExit systemExit) {
     this.commandLineArgsParser = commandLineArgsParser;

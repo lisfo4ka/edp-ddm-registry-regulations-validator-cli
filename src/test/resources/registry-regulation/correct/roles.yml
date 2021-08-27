@@ -1,3 +1,4 @@
+realm: officer
 roles:
   - name: officer
     description: Officer role

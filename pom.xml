@@ -27,8 +27,9 @@
     <guava.version>29.0-jre</guava.version>
     <commons-cli.version>1.4</commons-cli.version>
     <mockito.version>3.4.3</mockito.version>
+    <rulebook-core.version>0.12</rulebook-core.version>
 
-    <start-class>com.epam.digital.data.platform.registry.regulation.validation.RegistryRegulationsValidationCliApplication</start-class>
+    <start-class>com.epam.digital.data.platform.registry.regulation.validation.RegulationValidatorCliApplication</start-class>
 
     <sonar.coverage.exclusions>
       **/com/epam/digital/data/platform/registry/regulation/validation/model/**/*,
@@ -106,6 +107,12 @@
     <dependency>
       <groupId>org.camunda.bpm.model</groupId>
       <artifactId>camunda-dmn-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.deliveredtechnologies</groupId>
+      <artifactId>rulebook-core</artifactId>
+      <version>${rulebook-core.version}</version>
     </dependency>
 
     <dependency>

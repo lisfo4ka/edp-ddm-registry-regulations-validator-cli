@@ -10,13 +10,13 @@ import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-public class DmnRegistryRegulationValidatorTest {
+public class DmnFileValidatorTest {
 
-  private DmnRegulationFileValidator validator;
+  private DmnFileValidator validator;
 
   @Before
   public void setUp() {
-    this.validator = new DmnRegulationFileValidator();
+    this.validator = new DmnFileValidator();
   }
 
   @Test

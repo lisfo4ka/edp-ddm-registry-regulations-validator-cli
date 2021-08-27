@@ -1,6 +1,6 @@
 package com.epam.digital.data.platform.registry.regulation.validation.config;
 
-import com.epam.digital.data.platform.registry.regulation.validation.RegistryRegulationValidatorFactory;
+import com.epam.digital.data.platform.registry.regulation.validation.RegulationValidatorFactory;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.CommandLineArgsParser;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.CommandLineOptionsConverter;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.RegulationValidationCommandLineRunner;
@@ -19,14 +19,14 @@ public class AppConfig {
 
   @Bean
   @Autowired
-  public CommandLineRunner commandLineRunner(RegistryRegulationValidatorFactory registryRegulationValidatorFactory, SystemExit systemExit) {
-    return new RegulationValidationCommandLineRunner(registryRegulationValidatorFactory, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+  public CommandLineRunner commandLineRunner(RegulationValidatorFactory regulationValidatorFactory, SystemExit systemExit) {
+    return new RegulationValidationCommandLineRunner(regulationValidatorFactory, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
   }
 
   @Bean
   @Autowired
-  public RegistryRegulationValidatorFactory registryRegulationValidatorFactory(ResourceLoader resourceLoader) {
-    return new RegistryRegulationValidatorFactory(resourceLoader, yamlObjectMapper(), jsonObjectMapper());
+  public RegulationValidatorFactory registryRegulationValidatorFactory(ResourceLoader resourceLoader) {
+    return new RegulationValidatorFactory(resourceLoader, yamlObjectMapper(), jsonObjectMapper());
   }
 
   @Bean

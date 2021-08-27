@@ -10,13 +10,13 @@ import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-public class BpmnRegistryRegulationValidatorTest {
+public class BpmnFileValidatorTest {
 
-  private BpmnRegulationFileValidator validator;
+  private BpmnFileValidator validator;
 
   @Before
   public void setUp() {
-    this.validator = new BpmnRegulationFileValidator();
+    this.validator = new BpmnFileValidator();
   }
 
   @Test

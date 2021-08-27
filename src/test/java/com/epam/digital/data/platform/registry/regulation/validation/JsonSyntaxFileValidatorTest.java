@@ -7,13 +7,13 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JsonSyntaxRegistryRegulationValidatorTest {
+public class JsonSyntaxFileValidatorTest {
 
-  private JsonSyntaxRegulationFileValidator validator;
+  private JsonSyntaxFileValidator validator;
 
   @Before
   public void setUp() {
-    this.validator = new JsonSyntaxRegulationFileValidator(new JsonMapper());
+    this.validator = new JsonSyntaxFileValidator(new JsonMapper());
   }
 
   @Test

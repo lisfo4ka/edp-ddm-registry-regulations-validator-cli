@@ -4,7 +4,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-import com.epam.digital.data.platform.registry.regulation.validation.RegistryRegulationValidatorFactory;
+import com.epam.digital.data.platform.registry.regulation.validation.RegulationValidatorFactory;
 import com.epam.digital.data.platform.registry.regulation.validation.model.RegulationFiles;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
@@ -118,12 +118,30 @@ public class RegulationValidationCommandLineRunnerTest {
     Mockito.verify(systemExit, times(1)).complete();
   }
 
+  @Test
+  public void shouldFailBpAuthDueToDuplicates() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+
+    validationRunner.run(argOf(CommandLineArg.BP_AUTH, testResourcePathOf("registry-regulation/broken/bp-auth-duplicates.yml")));
+
+    Mockito.verify(systemExit, times(1)).validationFailure();
+  }
+
+  @Test
+  public void shouldFailBpTrembitaDueToDuplicates() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+
+    validationRunner.run(argOf(CommandLineArg.BP_TREMBITA, testResourcePathOf("registry-regulation/broken/bp-trembita-duplicates.yml")));
+
+    Mockito.verify(systemExit, times(1)).validationFailure();
+  }
+
   private RegulationValidationCommandLineRunner newValidationRunner(ResourceLoader resourceLoader,
       CommandLineArgsParser commandLineArgsParser,
       CommandLineOptionsConverter commandLineOptionsConverter,
       SystemExit systemExit) {
     return new RegulationValidationCommandLineRunner(
-        new RegistryRegulationValidatorFactory(resourceLoader, new YAMLMapper(), new JsonMapper()),
+        new RegulationValidatorFactory(resourceLoader, new YAMLMapper(), new JsonMapper()),
         commandLineArgsParser, commandLineOptionsConverter, systemExit
     );
   }

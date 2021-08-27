@@ -2,8 +2,13 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
+    "realm": {
+      "type": "string",
+      "enum": ["officer", "citizen", "external-system"]
+    },
     "roles": {
       "type": "array",
+      "minItems": 0,
       "items": [
         {
           "type": "object",
@@ -31,8 +36,7 @@
             }
           },
           "required": [
-            "name",
-            "description"
+            "name"
           ]
         }
       ]

@@ -4,25 +4,25 @@ import java.util.Arrays;
 
 public enum RegulationFileType {
 
-  JSON("json"),
-  YAML("yml"),
+  GLOBAL_VARS("yml", "yaml"),
+  BP_AUTH("yml", "yaml"),
+  BP_TREMBITA("yml", "yaml"),
+  ROLES("yml", "yaml"),
   BPMN("bpmn"),
-  DMN("dmn");
+  DMN("dmn"),
+  FORMS("json");
 
-  private String fileExtension;
+  private final String[] fileExtensions;
 
-  RegulationFileType(String fileExtension) {
-    this.fileExtension = fileExtension;
+  RegulationFileType(String... fileExtensions) {
+    this.fileExtensions = fileExtensions;
   }
 
-  public String getFileExtension() {
-    return fileExtension;
+  public String[] getFileExtensions() {
+    return fileExtensions;
   }
 
-  public static RegulationFileType of(String fileExtension) {
-    return Arrays.stream(values())
-        .filter(regulationFileType -> regulationFileType.getFileExtension().equals(fileExtension))
-        .findFirst()
-        .orElse(null);
+  public boolean isExtensionSupported(String fileExtension) {
+    return Arrays.asList(this.fileExtensions).contains(fileExtension);
   }
 }

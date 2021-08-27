@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RegistryRegulationsValidationCliApplication {
+public class RegulationValidatorCliApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(RegistryRegulationsValidationCliApplication.class, args);
+    SpringApplication.run(RegulationValidatorCliApplication.class, args);
   }
 }
