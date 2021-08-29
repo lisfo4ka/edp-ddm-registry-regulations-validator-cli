@@ -10,6 +10,8 @@ import java.util.Set;
 
 public class FileExtensionValidator implements RegulationValidator<File> {
 
+  private static final String EXT_ERROR_MESSAGE_FORMAT = "Regulation file must have '%s' extension";
+
   private final RegulationFileType regulationFileType;
 
   public FileExtensionValidator(RegulationFileType regulationFileType) {
@@ -24,7 +26,7 @@ public class FileExtensionValidator implements RegulationValidator<File> {
       return Collections.emptySet();
     }
 
-    String errorMessage = String.format("Regulation file must have '%s' extension", Joiner.on(",").join(regulationFileType.getFileExtensions()));
+    String errorMessage = String.format(EXT_ERROR_MESSAGE_FORMAT, Joiner.on(",").join(regulationFileType.getFileExtensions()));
     return Collections.singleton(ValidationError.of(regulationFile, errorMessage));
   }
 }

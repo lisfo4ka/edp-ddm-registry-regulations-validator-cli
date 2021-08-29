@@ -1,6 +1,9 @@
 package com.epam.digital.data.platform.registry.regulation.validation.cli;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 
 import com.google.common.base.Joiner;
 import lombok.SneakyThrows;
@@ -21,13 +24,13 @@ public class CommandLineOptionsConverterTest {
   public void shouldConvertAllOptionsToFiles() {
     var regulationFiles = commandLineOptionsConverter.convert(allOptionsPrefilled());
 
-    assertFalse(regulationFiles.getBpTrembitaFiles().isEmpty());
-    assertFalse(regulationFiles.getGlobalVarsFiles().isEmpty());
-    assertFalse(regulationFiles.getBpAuthFiles().isEmpty());
-    assertFalse(regulationFiles.getRolesFiles().isEmpty());
-    assertFalse(regulationFiles.getBpmnFiles().isEmpty());
-    assertFalse(regulationFiles.getDmnFiles().isEmpty());
-    assertFalse(regulationFiles.getFormFiles().isEmpty());
+    assertThat(regulationFiles.getBpTrembitaFiles(), is(not(empty())));
+    assertThat(regulationFiles.getGlobalVarsFiles(), is(not(empty())));
+    assertThat(regulationFiles.getBpAuthFiles(), is(not(empty())));
+    assertThat(regulationFiles.getRolesFiles(), is(not(empty())));
+    assertThat(regulationFiles.getBpmnFiles(), is(not(empty())));
+    assertThat(regulationFiles.getDmnFiles(), is(not(empty())));
+    assertThat(regulationFiles.getFormFiles(), is(not(empty())));
   }
 
   @SneakyThrows

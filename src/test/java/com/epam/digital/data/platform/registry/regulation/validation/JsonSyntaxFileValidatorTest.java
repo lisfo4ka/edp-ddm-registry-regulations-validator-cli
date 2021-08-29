@@ -1,6 +1,9 @@
 package com.epam.digital.data.platform.registry.regulation.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.File;
@@ -22,7 +25,7 @@ public class JsonSyntaxFileValidatorTest {
 
     var errors = this.validator.validate(processFile);
 
-    assertThat(errors.isEmpty()).isTrue();
+    assertThat(errors, is(empty()));
   }
 
   @Test
@@ -31,7 +34,7 @@ public class JsonSyntaxFileValidatorTest {
 
     var errors = this.validator.validate(processFile);
 
-    assertThat(errors.isEmpty()).isFalse();
+    assertThat(errors, is(not(empty())));
   }
 
   private File getFileFromClasspath(String filePath) {

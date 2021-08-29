@@ -5,7 +5,6 @@ import com.deliveredtechnologies.rulebook.lang.RuleBuilder;
 import com.deliveredtechnologies.rulebook.model.Rule;
 import com.deliveredtechnologies.rulebook.model.rulechain.cor.CoRRuleBook;
 import com.epam.digital.data.platform.registry.regulation.validation.model.BpAuthConfiguration;
-import com.epam.digital.data.platform.registry.regulation.validation.model.BpAuthConfiguration.ProcessDefinition;
 import com.epam.digital.data.platform.registry.regulation.validation.model.ValidationError;
 import com.epam.digital.data.platform.registry.regulation.validation.model.ValidationErrors;
 import com.google.common.collect.Sets;
@@ -14,6 +13,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BpAuthValidationRules extends CoRRuleBook<ValidationErrors> {
+
+  private static final String DUPLICATES_ERROR_MSG_FORMAT = "Duplicated process definitions found: %s";
 
   @Override
   public void defineRules() {
@@ -24,7 +25,7 @@ public class BpAuthValidationRules extends CoRRuleBook<ValidationErrors> {
     return RuleBuilder.create()
         .withFactType(BpAuthConfiguration.class)
         .withResultType(ValidationErrors.class)
-        .when(value -> duplicatedProcessDefinitionIdsExist(value))
+        .when(this::duplicatedProcessDefinitionIdsExist)
         .then((value, result) -> result.getValue().add(duplicatedProcessDefinitionIdsFoundError(value)))
         .build();
   }
@@ -38,12 +39,10 @@ public class BpAuthValidationRules extends CoRRuleBook<ValidationErrors> {
         .map(d -> String.format("'%s'", d.getProcessDefinitionId()))
         .collect(Collectors.joining(","));
 
-    var validationError = ValidationError.builder()
+    return ValidationError.builder()
         .regulationFileName(bpAuthConfiguration.getRegulationFileName())
-        .errorMessage(String.format("Duplicated process definitions found: %s", joinedDuplicatedIds))
+        .errorMessage(String.format(DUPLICATES_ERROR_MSG_FORMAT, joinedDuplicatedIds))
         .build();
-
-    return validationError;
   }
 
   private boolean duplicatedProcessDefinitionIdsExist(NameValueReferableTypeConvertibleMap<BpAuthConfiguration> value) {
@@ -53,7 +52,7 @@ public class BpAuthValidationRules extends CoRRuleBook<ValidationErrors> {
     return !duplicates.isEmpty();
   }
 
-  private Set<ProcessDefinition> findDuplicates(List<ProcessDefinition> processDefinitions) {
+  private Set<BpAuthConfiguration.ProcessDefinition> findDuplicates(List<BpAuthConfiguration.ProcessDefinition> processDefinitions) {
     var duplicates = Sets.newHashSet();
     return processDefinitions.stream()
         .filter(n -> !duplicates.add(n))

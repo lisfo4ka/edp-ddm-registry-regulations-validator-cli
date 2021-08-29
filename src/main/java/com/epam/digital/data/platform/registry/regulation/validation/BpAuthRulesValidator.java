@@ -7,22 +7,20 @@ import com.epam.digital.data.platform.registry.regulation.validation.model.BpAut
 import com.epam.digital.data.platform.registry.regulation.validation.model.ValidationError;
 import com.epam.digital.data.platform.registry.regulation.validation.model.ValidationErrors;
 import com.epam.digital.data.platform.registry.regulation.validation.rules.BpAuthValidationRules;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.Set;
-import lombok.SneakyThrows;
 
 public class BpAuthRulesValidator implements RegulationValidator<File> {
 
-  private final ObjectMapper objectMapper;
+  private final RegulationConfigurationLoader configurationLoader;
 
-  public BpAuthRulesValidator(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
+  public BpAuthRulesValidator(RegulationConfigurationLoader configurationLoader) {
+    this.configurationLoader = configurationLoader;
   }
 
   @Override
   public Set<ValidationError> validate(File regulationFile) {
-    var bpAuthConfiguration = readBpAuthConfiguration(regulationFile);
+    var bpAuthConfiguration = configurationLoader.load(regulationFile, BpAuthConfiguration.class);
     var bpAuthConfigurationFacts = new FactMap<>(new Fact<>(bpAuthConfiguration));
 
     var bpAuthRuleBook =
@@ -34,12 +32,5 @@ public class BpAuthRulesValidator implements RegulationValidator<File> {
     bpAuthRuleBook.run(bpAuthConfigurationFacts);
 
     return bpAuthRuleBook.getResult().get().getValue().getErrors();
-  }
-
-  @SneakyThrows
-  private BpAuthConfiguration readBpAuthConfiguration(File regulationFile) {
-    BpAuthConfiguration bpAuthConfiguration = objectMapper.readValue(regulationFile, BpAuthConfiguration.class);
-    bpAuthConfiguration.setRegulationFileName(regulationFile.getName());
-    return bpAuthConfiguration;
   }
 }

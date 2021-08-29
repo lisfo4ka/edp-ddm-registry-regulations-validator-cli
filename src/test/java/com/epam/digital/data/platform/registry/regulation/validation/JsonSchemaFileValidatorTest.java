@@ -1,6 +1,9 @@
 package com.epam.digital.data.platform.registry.regulation.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
@@ -9,40 +12,38 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion.VersionFlag;
 import java.io.File;
 import lombok.SneakyThrows;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassRelativeResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
 public class JsonSchemaFileValidatorTest {
 
+  private final ResourceLoader resourceLoader = new ClassRelativeResourceLoader(getClass());
+
   private RegulationValidator<File> validator;
 
-  private ResourceLoader resourceLoader = new ClassRelativeResourceLoader(getClass());
+  @Before
+  public void setUp() {
+    this.validator = new JsonSchemaFileValidator(jsonSchemaOf("classpath:schema/bp-auth-schema.json"), new YAMLMapper());
+  }
 
   @Test
   public void shouldPassSchemaValidation() {
     var processFile = getFileFromClasspath("registry-regulation/correct/bp-auth.yml");
 
-    YAMLMapper yamlObjectMapper = new YAMLMapper();
-
-    validator = new JsonSchemaFileValidator(jsonSchemaOf("classpath:schema/bp-auth-schema.json"), yamlObjectMapper);
-
     var errors = validator.validate(processFile);
 
-    assertThat(errors.isEmpty()).isTrue();
+    assertThat(errors, is(empty()));
   }
 
   @Test
   public void shouldFailSchemaValidation() {
     var processFile = getFileFromClasspath("registry-regulation/broken/bp-auth-broken.yml");
 
-    YAMLMapper yamlObjectMapper = new YAMLMapper();
-
-    validator = new JsonSchemaFileValidator(jsonSchemaOf("classpath:schema/bp-auth-schema.json"), yamlObjectMapper);
-
     var errors = validator.validate(processFile);
 
-    assertThat(errors.isEmpty()).isFalse();
+    assertThat(errors, is(not(empty())));
   }
 
   private File getFileFromClasspath(String filePath) {

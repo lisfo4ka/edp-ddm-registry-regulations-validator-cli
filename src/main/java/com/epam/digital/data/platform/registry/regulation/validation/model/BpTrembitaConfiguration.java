@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-public class BpTrembitaConfiguration {
+public class BpTrembitaConfiguration implements RegulationConfiguration {
 
   @JsonIgnore
   private String regulationFileName;

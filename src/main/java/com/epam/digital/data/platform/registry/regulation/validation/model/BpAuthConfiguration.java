@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-public class BpAuthConfiguration {
+public class BpAuthConfiguration implements RegulationConfiguration {
 
   @JsonIgnore
   private String regulationFileName;

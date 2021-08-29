@@ -1,21 +1,30 @@
 package com.epam.digital.data.platform.registry.regulation.validation.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Builder.Default;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class RegulationFiles {
 
-  private Collection<File> bpTrembitaFiles;
-  private Collection<File> globalVarsFiles;
-  private Collection<File> bpAuthFiles;
-  private Collection<File> rolesFiles;
-  private Collection<File> bpmnFiles;
-  private Collection<File> dmnFiles;
-  private Collection<File> formFiles;
+  @Default
+  private Collection<File> bpTrembitaFiles = new ArrayList<>();
+  @Default
+  private Collection<File> globalVarsFiles = new ArrayList<>();
+  @Default
+  private Collection<File> bpAuthFiles = new ArrayList<>();
+  @Default
+  private Collection<File> rolesFiles = new ArrayList<>();
+  @Default
+  private Collection<File> bpmnFiles = new ArrayList<>();
+  @Default
+  private Collection<File> dmnFiles = new ArrayList<>();
+  @Default
+  private Collection<File> formFiles = new ArrayList<>();
 
   public boolean isEmpty() {
     return bpTrembitaFiles.isEmpty()

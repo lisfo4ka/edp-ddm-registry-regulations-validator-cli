@@ -1,6 +1,9 @@
 package com.epam.digital.data.platform.registry.regulation.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 
 import java.io.File;
 import org.camunda.bpm.model.dmn.Dmn;
@@ -25,7 +28,7 @@ public class DmnFileValidatorTest {
 
     var errors = this.validator.validate(ruleFile);
 
-    assertThat(errors.isEmpty()).isTrue();
+    assertThat(errors, is(empty()));
   }
 
   @Test
@@ -34,7 +37,7 @@ public class DmnFileValidatorTest {
 
     var errors = this.validator.validate(ruleFile);
 
-    assertThat(errors.isEmpty()).isFalse();
+    assertThat(errors, is(not(empty())));
   }
 
   @Test
@@ -50,7 +53,7 @@ public class DmnFileValidatorTest {
 
       var errors = this.validator.validate(ruleFile);
 
-      assertThat(errors.isEmpty()).isFalse();
+      assertThat(errors, is(not(empty())));
     }
   }
 

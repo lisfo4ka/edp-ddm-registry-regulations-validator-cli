@@ -56,75 +56,67 @@ public class RegulationValidatorFactory {
 
   private Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators(ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper) {
     return Map.of(
-        RegulationFileType.BP_AUTH, loggingDecorator(
-            compositeValidator(
-                new FileExistenceValidator(),
-                new FileExtensionValidator(RegulationFileType.BP_AUTH),
-                new EmptyFileValidator(),
-                new JsonSchemaFileValidator(jsonSchemaOf(BP_AUTH_JSON_SCHEMA), yamlObjectMapper),
-                new BpAuthRulesValidator(yamlObjectMapper)
-            )
+        RegulationFileType.BP_AUTH, FileValidatorLoggingDecorator.wrap(
+            CompositeFileValidator.builder()
+                .validator(new FileExistenceValidator())
+                .validator(new FileExtensionValidator(RegulationFileType.BP_AUTH))
+                .validator(new EmptyFileValidator())
+                .validator(new JsonSchemaFileValidator(jsonSchemaOf(BP_AUTH_JSON_SCHEMA), yamlObjectMapper))
+                .validator(new BpAuthRulesValidator(new RegulationConfigurationLoader(yamlObjectMapper)))
+                .build()
         ),
-        RegulationFileType.BP_TREMBITA, loggingDecorator(
-            compositeValidator(
-                new FileExistenceValidator(),
-                new FileExtensionValidator(RegulationFileType.BP_TREMBITA),
-                new EmptyFileValidator(),
-                new JsonSchemaFileValidator(jsonSchemaOf(BP_TREMBITA_JSON_SCHEMA), yamlObjectMapper),
-                new BpTrembitaRulesValidator(yamlObjectMapper)
-            )
+        RegulationFileType.BP_TREMBITA, FileValidatorLoggingDecorator.wrap(
+            CompositeFileValidator.builder()
+                .validator(new FileExistenceValidator())
+                .validator(new FileExtensionValidator(RegulationFileType.BP_TREMBITA))
+                .validator(new EmptyFileValidator())
+                .validator(new JsonSchemaFileValidator(jsonSchemaOf(BP_TREMBITA_JSON_SCHEMA), yamlObjectMapper))
+                .validator(new BpTrembitaRulesValidator(new RegulationConfigurationLoader(yamlObjectMapper)))
+                .build()
         ),
-        RegulationFileType.ROLES, loggingDecorator(
-            compositeValidator(
-                new FileExistenceValidator(),
-                new FileExtensionValidator(RegulationFileType.ROLES),
-                new EmptyFileValidator(),
-                new JsonSchemaFileValidator(jsonSchemaOf(ROLES_JSON_SCHEMA), yamlObjectMapper)
-            )
+        RegulationFileType.ROLES, FileValidatorLoggingDecorator.wrap(
+            CompositeFileValidator.builder()
+                .validator(new FileExistenceValidator())
+                .validator(new FileExtensionValidator(RegulationFileType.ROLES))
+                .validator(new EmptyFileValidator())
+                .validator(new JsonSchemaFileValidator(jsonSchemaOf(ROLES_JSON_SCHEMA), yamlObjectMapper))
+                .build()
         ),
-        RegulationFileType.GLOBAL_VARS, loggingDecorator(
-            compositeValidator(
-                new FileExistenceValidator(),
-                new FileExtensionValidator(RegulationFileType.GLOBAL_VARS),
-                new EmptyFileValidator(),
-                new JsonSchemaFileValidator(jsonSchemaOf(GLOBAL_VARS_JSON_SCHEMA), yamlObjectMapper)
-            )
+        RegulationFileType.GLOBAL_VARS, FileValidatorLoggingDecorator.wrap(
+            CompositeFileValidator.builder()
+                .validator(new FileExistenceValidator())
+                .validator(new FileExtensionValidator(RegulationFileType.GLOBAL_VARS))
+                .validator(new EmptyFileValidator())
+                .validator(new JsonSchemaFileValidator(jsonSchemaOf(GLOBAL_VARS_JSON_SCHEMA), yamlObjectMapper))
+                .build()
         ),
-        RegulationFileType.FORMS, loggingDecorator(
-            compositeValidator(
-                new FileExistenceValidator(),
-                new FileExtensionValidator(RegulationFileType.FORMS),
-                new EmptyFileValidator(),
-                new JsonSyntaxFileValidator(jsonObjectMapper)
-            )
+        RegulationFileType.FORMS, FileValidatorLoggingDecorator.wrap(
+            CompositeFileValidator.builder()
+                .validator(new FileExistenceValidator())
+                .validator(new FileExtensionValidator(RegulationFileType.FORMS))
+                .validator(new EmptyFileValidator())
+                .validator(new JsonSyntaxFileValidator(jsonObjectMapper))
+                .build()
         ),
-        RegulationFileType.BPMN, loggingDecorator(
-            compositeValidator(
-                new FileExistenceValidator(),
-                new FileExtensionValidator(RegulationFileType.BPMN),
-                new BpmnFileValidator()
-            )
+        RegulationFileType.BPMN, FileValidatorLoggingDecorator.wrap(
+            CompositeFileValidator.builder()
+                .validator(new FileExistenceValidator())
+                .validator(new FileExtensionValidator(RegulationFileType.BPMN))
+                .validator(new BpmnFileValidator())
+                .build()
         ),
-        RegulationFileType.DMN, loggingDecorator(
-            compositeValidator(
-                new FileExistenceValidator(),
-                new FileExtensionValidator(RegulationFileType.DMN),
-                new DmnFileValidator()
-            )
+        RegulationFileType.DMN, FileValidatorLoggingDecorator.wrap(
+            CompositeFileValidator.builder()
+                .validator(new FileExistenceValidator())
+                .validator(new FileExtensionValidator(RegulationFileType.DMN))
+                .validator(new DmnFileValidator())
+                .build()
         )
     );
   }
 
   private RegulationValidator<File> validatorFor(RegulationFileType regulationFileType) {
     return this.regulationTypeValidators.get(regulationFileType);
-  }
-
-  private RegulationValidator<File> loggingDecorator(RegulationValidator<File> validator) {
-    return new FileValidatorLoggingDecorator(validator);
-  }
-
-  private RegulationValidator<File> compositeValidator(RegulationValidator<File>... validators) {
-    return CompositeFileValidator.of(validators);
   }
 
   @SneakyThrows

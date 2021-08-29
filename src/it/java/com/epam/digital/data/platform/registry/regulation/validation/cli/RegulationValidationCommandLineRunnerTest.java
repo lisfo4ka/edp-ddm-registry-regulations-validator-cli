@@ -11,7 +11,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.apache.commons.cli.Option;
@@ -193,14 +192,6 @@ public class RegulationValidationCommandLineRunnerTest {
   }
 
   private RegulationFiles emptyRegulationFiles() {
-    return RegulationFiles.builder()
-        .bpTrembitaFiles(Collections.emptyList())
-        .globalVarsFiles(Collections.emptyList())
-        .bpAuthFiles(Collections.emptyList())
-        .rolesFiles(Collections.emptyList())
-        .formFiles(Collections.emptyList())
-        .bpmnFiles(Collections.emptyList())
-        .dmnFiles(Collections.emptyList())
-        .build();
+    return RegulationFiles.builder().build();
   }
 }

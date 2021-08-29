@@ -1,9 +1,13 @@
 package com.epam.digital.data.platform.registry.regulation.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.io.File;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +17,7 @@ public class BpAuthRulesValidatorTest {
 
   @Before
   public void setUp() {
-    this.validator = new BpAuthRulesValidator(new YAMLMapper());
+    this.validator = new BpAuthRulesValidator(new RegulationConfigurationLoader(new YAMLMapper()));
   }
 
   @Test
@@ -22,7 +26,7 @@ public class BpAuthRulesValidatorTest {
 
     var errors = validator.validate(bpAuthFile);
 
-    assertThat(errors.isEmpty()).isFalse();
+    assertThat(errors, is(not(empty())));
   }
 
   @Test
@@ -31,7 +35,7 @@ public class BpAuthRulesValidatorTest {
 
     var errors = validator.validate(bpAuthFile);
 
-    assertThat(errors.isEmpty()).isTrue();
+    assertThat(errors, is(empty()));
   }
 
   private File getFileFromClasspath(String filePath) {
