@@ -1,7 +1,5 @@
 package com.epam.digital.data.platform.registry.regulation.validation;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import com.epam.digital.data.platform.registry.regulation.validation.model.ValidationError;
 import com.google.common.io.Files;
 import java.io.File;
@@ -11,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class EmptyFileValidator implements RegulationValidator<File> {
 
@@ -18,7 +17,7 @@ public class EmptyFileValidator implements RegulationValidator<File> {
   public Set<ValidationError> validate(File regulationFile ) {
     try {
       List<String> strLines = Files.readLines(regulationFile, StandardCharsets.UTF_8);
-      if (isBlank(strLines.stream().collect(Collectors.joining()))) {
+      if (StringUtils.isBlank(strLines.stream().collect(Collectors.joining()))) {
         return Collections.singleton(ValidationError.of(regulationFile, "File must not be empty"));
       }
       return Collections.emptySet();
