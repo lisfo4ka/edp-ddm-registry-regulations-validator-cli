@@ -1,7 +1,11 @@
 package com.epam.digital.data.platform.registry.regulation.validation.cli;
 
-import com.epam.digital.data.platform.registry.regulation.validation.RegulationValidatorFactory;
-import com.epam.digital.data.platform.registry.regulation.validation.model.RegulationFiles;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFiles;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineArgsParser;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineOptionsConverter;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.support.SystemExit;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.RegulationValidatorFactory;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
 import org.springframework.boot.CommandLineRunner;
@@ -54,11 +58,11 @@ public class RegulationValidationCommandLineRunner implements CommandLineRunner 
   }
 
   private void validate(RegulationFiles registryRegulationFiles) {
-    var registryRegulationValidator = registryRegulationValidatorFactory.newRegistryRegulationFilesValidator();
+    var regulationFilesValidator = registryRegulationValidatorFactory.newRegulationFilesValidator();
 
     log.info("Starting registry regulation validation...");
 
-    var errors = registryRegulationValidator.validate(registryRegulationFiles);
+    var errors = regulationFilesValidator.validate(registryRegulationFiles, ValidationContext.empty());
 
     if (errors.isEmpty()) {
       log.info("Registry regulation validation passed successfully.");
@@ -71,7 +75,7 @@ public class RegulationValidationCommandLineRunner implements CommandLineRunner 
   }
 
   private void handleCommandLineParseException(ParseException e) {
-    log.error("Parsing failure: {}. Find help below:", e.getMessage());
+    log.error("Parsing failure" + (e.getMessage() != null ? ": " + e.getMessage() : "") + ". Find help below:");
 
     this.commandLineArgsParser.printHelp();
     this.systemExit.systemError();

@@ -4,7 +4,11 @@
   "properties": {
     "realm": {
       "type": "string",
-      "enum": ["officer", "citizen", "external-system"]
+      "enum": [
+        "officer",
+        "citizen",
+        "external-system"
+      ]
     },
     "roles": {
       "type": "array",

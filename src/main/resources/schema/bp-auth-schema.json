@@ -7,7 +7,11 @@
       "properties": {
         "realm": {
           "type": "string",
-          "enum": ["officer", "citizen", "external-system"]
+          "enum": [
+            "officer",
+            "citizen",
+            "external-system"
+          ]
         },
         "process_definitions": {
           "type": "array",

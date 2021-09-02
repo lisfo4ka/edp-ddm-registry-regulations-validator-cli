@@ -4,8 +4,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-import com.epam.digital.data.platform.registry.regulation.validation.RegulationValidatorFactory;
-import com.epam.digital.data.platform.registry.regulation.validation.model.RegulationFiles;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFiles;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineArg;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineArgsParser;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineOptionsConverter;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.support.SystemExit;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.RegulationValidatorFactory;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.nio.file.Path;
