@@ -17,7 +17,7 @@ import org.junit.Test;
 public class RegulationConfigurationLoaderTest {
 
   @Test
-  public void shouldPassForBpAuthFile() {
+  public void shouldPassForBpAuthFile() throws IOException {
     var configurationLoader = new RegulationConfigurationLoader(new YAMLMapper());
     var bpAuthFile = getFileFromClasspath("registry-regulation/correct/bp-auth.yml");
 
@@ -29,7 +29,7 @@ public class RegulationConfigurationLoaderTest {
   }
 
   @Test
-  public void shouldPassForBpTrembitaFile() {
+  public void shouldPassForBpTrembitaFile() throws IOException {
     var configurationLoader = new RegulationConfigurationLoader(new YAMLMapper());
     var bpTrembitaFile = getFileFromClasspath("registry-regulation/correct/bp-trembita.yml");
 

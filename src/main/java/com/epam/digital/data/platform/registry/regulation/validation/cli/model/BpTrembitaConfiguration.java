@@ -36,6 +36,9 @@ public class BpTrembitaConfiguration implements RegulationConfiguration {
     @JsonProperty("return_vars")
     private List<String> returnVars = new ArrayList<>();
 
+    @JsonProperty("requires_signature")
+    private boolean requiresSignature;
+
     @Override
     @JsonIgnore
     public String getId() {

@@ -8,13 +8,8 @@ import static org.hamcrest.core.IsNot.not;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFileType;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.RegulationValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationContext;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.SpecVersion.VersionFlag;
 import java.io.File;
-import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassRelativeResourceLoader;
@@ -28,7 +23,7 @@ public class JsonSchemaFileValidatorTest {
 
   @Before
   public void setUp() {
-    this.validator = new JsonSchemaFileValidator(jsonSchemaOf("classpath:schema/bp-auth-schema.json"), new YAMLMapper());
+    this.validator = new JsonSchemaFileValidator("classpath:schema/bp-auth-schema.json", resourceLoader, new YAMLMapper());
   }
 
   @Test
@@ -52,15 +47,5 @@ public class JsonSchemaFileValidatorTest {
   private File getFileFromClasspath(String filePath) {
     var classLoader = getClass().getClassLoader();
     return new File(classLoader.getResource(filePath).getFile());
-  }
-
-  @SneakyThrows
-  private JsonSchema jsonSchemaOf(String jsonSchemaLocation) {
-    var resource = resourceLoader.getResource(jsonSchemaLocation);
-    var factory = JsonSchemaFactory
-        .builder(JsonSchemaFactory.getInstance(VersionFlag.V4))
-        .objectMapper(new JsonMapper())
-        .build();
-    return factory.getSchema(resource.getInputStream());
   }
 }

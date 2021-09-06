@@ -19,15 +19,13 @@ public class DmnFileValidator implements RegulationValidator<File> {
       Dmn.validateModel(dmnModelInstance);
       return Collections.emptySet();
     } catch (DmnModelException ex) {
-      return singleError("DMN file parsing failure", ex, regulationFile, validationContext);
+      return Collections.singleton(
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "DMN file parsing failure", ex)
+      );
     } catch (ModelValidationException ex) {
-      return singleError("DMN file validation against the schema failure", ex, regulationFile, validationContext);
+      return Collections.singleton(
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "DMN file validation against the schema failure", ex)
+      );
     }
-  }
-
-  private Set<ValidationError> singleError(String errorMessage, Exception ex, File regulationFile, ValidationContext validationContext) {
-    return Collections.singleton(
-        ValidationError.of(validationContext.getRegulationFileType(), regulationFile, errorMessage, ex)
-    );
   }
 }

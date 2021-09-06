@@ -3,6 +3,8 @@ package com.epam.digital.data.platform.registry.regulation.validation.cli.valida
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationConfiguration;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.RegulationConfigurationLoader;
 import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,12 +24,17 @@ public class TypedConfigurationValidator<T extends RegulationConfiguration> impl
 
   @Override
   public Set<ValidationError> validate(File regulationFile, ValidationContext validationContext) {
-    var configuration = this.configurationLoader.load(regulationFile, this.configurationClass);
-    var errors = new LinkedHashSet<ValidationError>();
-    for (var validator : validators) {
-      errors.addAll(validator.validate(configuration, validationContext));
+    try {
+      T configuration = this.configurationLoader.load(regulationFile, this.configurationClass);
+      var errors = new LinkedHashSet<ValidationError>();
+      for (var validator : validators) {
+        errors.addAll(validator.validate(configuration, validationContext));
+      }
+      return errors;
+    } catch (IOException ex) {
+      return Collections.singleton(
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "File processing failure", ex)
+      );
     }
-    return errors;
   }
 }
-

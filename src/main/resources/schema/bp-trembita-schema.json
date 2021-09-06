@@ -6,65 +6,54 @@
       "type": "object",
       "properties": {
         "process_definitions": {
-          "minItems": 0,
           "type": "array",
-          "items": [
-            {
+          "minItems": 0,
+          "items": {
               "type": "object",
               "properties": {
                 "process_definition_id": {
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 1
+                },
+                "requires_signature": {
+                  "type": "boolean",
+                  "default": false
                 },
                 "start_vars": {
                   "type": "array",
                   "minItems": 0,
                   "uniqueItems": true,
-                  "items": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "string"
-                    }
-                  ]
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
                 },
                 "return_vars": {
                   "type": "array",
                   "minItems": 0,
                   "uniqueItems": true,
-                  "items": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "string"
-                    }
-                  ]
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
                 }
               },
+              "additionalProperties": false,
               "required": [
                 "process_definition_id",
                 "start_vars",
                 "return_vars"
               ]
             }
-          ]
         }
       },
+      "additionalProperties": false,
       "required": [
         "process_definitions"
       ]
     }
   },
+  "additionalProperties": false,
   "required": [
     "trembita"
   ]

@@ -23,13 +23,9 @@ public class JsonSyntaxFileValidator implements RegulationValidator<File> {
       this.objectMapper.readTree(regulationFile);
       return Collections.emptySet();
     } catch (IOException ex) {
-      return singleError("File processing failure", ex, regulationFile, validationContext);
+      return Collections.singleton(
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "File processing failure", ex)
+      );
     }
-  }
-
-  private Set<ValidationError> singleError(String errorMessage, Exception ex, File regulationFile, ValidationContext validationContext) {
-    return Collections.singleton(
-        ValidationError.of(validationContext.getRegulationFileType(), regulationFile, errorMessage, ex)
-    );
   }
 }

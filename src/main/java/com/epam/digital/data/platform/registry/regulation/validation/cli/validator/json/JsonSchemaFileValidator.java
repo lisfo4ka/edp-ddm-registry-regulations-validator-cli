@@ -6,20 +6,27 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationError;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion.VersionFlag;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import lombok.SneakyThrows;
+import org.springframework.core.io.ResourceLoader;
 
 public class JsonSchemaFileValidator implements RegulationValidator<File> {
+
+  private static final VersionFlag JSON_SCHEMA_VERSION = VersionFlag.V4;
 
   private final JsonSchema schema;
   private final ObjectMapper fileObjectMapper;
 
-  public JsonSchemaFileValidator(JsonSchema schema, ObjectMapper fileObjectMapper) {
-    this.schema = schema;
+  public JsonSchemaFileValidator(String jsonSchemaLocation, ResourceLoader resourceLoader, ObjectMapper fileObjectMapper) {
+    this.schema = loadSchema(jsonSchemaLocation, resourceLoader);
     this.fileObjectMapper = fileObjectMapper;
   }
 
@@ -29,7 +36,9 @@ public class JsonSchemaFileValidator implements RegulationValidator<File> {
       var jsonNode = fileObjectMapper.readTree(regulationFile);
       return validateSchema(regulationFile, jsonNode, validationContext.getRegulationFileType());
     } catch (IOException ex) {
-      return singleError("File processing failure", ex, regulationFile, validationContext);
+      return Collections.singleton(
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "File processing failure", ex)
+      );
     }
   }
 
@@ -42,9 +51,13 @@ public class JsonSchemaFileValidator implements RegulationValidator<File> {
     return errors;
   }
 
-  private Set<ValidationError> singleError(String errorMessage, Exception ex, File regulationFile, ValidationContext validationContext) {
-    return Collections.singleton(
-        ValidationError.of(validationContext.getRegulationFileType(), regulationFile, errorMessage, ex)
-    );
+  @SneakyThrows
+  private JsonSchema loadSchema(String jsonSchemaLocation, ResourceLoader resourceLoader) {
+    var resource = resourceLoader.getResource(jsonSchemaLocation);
+    var factory = JsonSchemaFactory
+        .builder(JsonSchemaFactory.getInstance(JSON_SCHEMA_VERSION))
+        .objectMapper(new JsonMapper())
+        .build();
+    return factory.getSchema(resource.getInputStream());
   }
 }

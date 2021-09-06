@@ -20,14 +20,14 @@ public abstract class AbstractProcessUniquenessValidator<T extends RegulationCon
     var regulationFileType = context.getRegulationFileType();
     var regulationFile = regulation.getRegulationFile();
     var processDefinitions = getProcessDefinitions(regulation);
-    var duplicateIds = findDuplicates(processDefinitions);
+    var duplicateItems = findDuplicates(processDefinitions);
 
-    if (duplicateIds.isEmpty()) {
+    if (duplicateItems.isEmpty()) {
       return Collections.emptySet();
     }
 
-    var joinedDuplicatedIds = duplicateIds.stream()
-        .map(id -> String.format("'%s'", id))
+    var joinedDuplicatedIds = duplicateItems.stream()
+        .map(item -> String.format("'%s'", item.getId()))
         .collect(Collectors.joining(","));
 
     var validationError = ValidationError.builder()

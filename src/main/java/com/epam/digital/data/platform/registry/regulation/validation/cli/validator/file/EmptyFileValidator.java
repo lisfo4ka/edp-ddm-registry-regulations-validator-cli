@@ -18,28 +18,20 @@ public class EmptyFileValidator implements RegulationValidator<File> {
     try {
       var content = readFileContent(regulationFile);
       if (StringUtils.isBlank(content)) {
-        return singleError("File must not be empty", regulationFile, validationContext);
+        return Collections.singleton(
+            ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "File must not be empty")
+        );
       }
       return Collections.emptySet();
     } catch (IOException ex) {
-      return singleError("File processing failure", ex, regulationFile, validationContext);
+      return Collections.singleton(
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "File processing failure", ex)
+      );
     }
   }
 
   private String readFileContent(File regulationFile) throws IOException {
     var strLines = Files.readLines(regulationFile, StandardCharsets.UTF_8);
     return String.join("", strLines);
-  }
-
-  private Set<ValidationError> singleError(String errorMessage, Exception ex, File regulationFile, ValidationContext validationContext) {
-    return Collections.singleton(
-        ValidationError.of(validationContext.getRegulationFileType(), regulationFile, errorMessage, ex)
-    );
-  }
-
-  private Set<ValidationError> singleError(String errorMessage, File regulationFile, ValidationContext validationContext) {
-    return Collections.singleton(
-        ValidationError.of(validationContext.getRegulationFileType(), regulationFile, errorMessage)
-    );
   }
 }

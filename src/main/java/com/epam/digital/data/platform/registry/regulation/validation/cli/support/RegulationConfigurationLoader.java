@@ -3,7 +3,7 @@ package com.epam.digital.data.platform.registry.regulation.validation.cli.suppor
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import lombok.SneakyThrows;
+import java.io.IOException;
 
 public class RegulationConfigurationLoader {
 
@@ -13,8 +13,7 @@ public class RegulationConfigurationLoader {
     this.objectMapper = objectMapper;
   }
 
-  @SneakyThrows
-  public <T extends RegulationConfiguration> T load(File regulationFile, Class<T> configurationClass) {
+  public <T extends RegulationConfiguration> T load(File regulationFile, Class<T> configurationClass) throws IOException {
     var config = objectMapper.readValue(regulationFile, configurationClass);
     config.setRegulationFile(regulationFile);
     return config;

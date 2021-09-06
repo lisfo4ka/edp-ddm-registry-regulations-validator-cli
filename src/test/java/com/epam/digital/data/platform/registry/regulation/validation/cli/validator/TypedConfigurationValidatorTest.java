@@ -8,13 +8,14 @@ import static org.mockito.Mockito.when;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.BpAuthConfiguration;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.RegulationConfigurationLoader;
 import java.io.File;
+import java.io.IOException;
 import org.junit.Test;
 
 public class TypedConfigurationValidatorTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void shouldLoadTypedConfigAndValidate() {
+  public void shouldLoadTypedConfigAndValidate() throws IOException {
     var someFile = new File("");
     var bpAuthConfiguration = new BpAuthConfiguration();
     var validationContext = ValidationContext.empty();

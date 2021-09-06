@@ -20,15 +20,13 @@ public class BpmnFileValidator implements RegulationValidator<File> {
       Bpmn.validateModel(bpmnModel);
       return Collections.emptySet();
     } catch (BpmnModelException | ModelParseException ex) {
-      return singleError("BPMN file parsing failure", ex, regulationFile, validationContext);
+      return Collections.singleton(
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "BPMN file parsing failure", ex)
+      );
     } catch (ModelValidationException ex) {
-      return singleError("BPMN file validation against the schema failure", ex, regulationFile, validationContext);
+      return Collections.singleton(
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "BPMN file validation against the schema failure", ex)
+      );
     }
-  }
-
-  private Set<ValidationError> singleError(String errorMessage, Exception ex, File regulationFile, ValidationContext validationContext) {
-    return Collections.singleton(
-        ValidationError.of(validationContext.getRegulationFileType(), regulationFile, errorMessage, ex)
-    );
   }
 }
