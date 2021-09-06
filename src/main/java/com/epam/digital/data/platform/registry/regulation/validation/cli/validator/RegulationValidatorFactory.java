@@ -12,7 +12,6 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileExtensionValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileValidatorLoggingDecorator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.json.JsonSchemaFileValidator;
-import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.json.JsonSyntaxFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpAuthProcessUniquenessValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpTrembitaProcessUniquenessValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +25,7 @@ public class RegulationValidatorFactory {
   private static final String BP_TREMBITA_JSON_SCHEMA = "classpath:schema/bp-trembita-schema.json";
   private static final String ROLES_JSON_SCHEMA = "classpath:schema/roles-schema.json";
   private static final String GLOBAL_VARS_JSON_SCHEMA = "classpath:schema/global-vars-schema.json";
+  private static final String FORMS_JSON_SCHEMA = "classpath:schema/forms-schema.json";
 
   private final Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators;
 
@@ -43,7 +43,7 @@ public class RegulationValidatorFactory {
         RegulationFileType.BP_TREMBITA, newBpTrembitaFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.ROLES, newRolesFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.GLOBAL_VARS, newGlobalVarsFileValidator(resourceLoader, yamlObjectMapper),
-        RegulationFileType.FORMS, newFormsFileValidator(jsonObjectMapper),
+        RegulationFileType.FORMS, newFormsFileValidator(resourceLoader, jsonObjectMapper),
         RegulationFileType.BPMN, newBpmnFileValidator(),
         RegulationFileType.DMN, newDmnFileValidator()
     );
@@ -105,13 +105,13 @@ public class RegulationValidatorFactory {
     );
   }
 
-  private RegulationValidator<File> newFormsFileValidator(ObjectMapper jsonObjectMapper) {
+  private RegulationValidator<File> newFormsFileValidator(ResourceLoader resourceLoader, ObjectMapper jsonObjectMapper) {
     return decorate(
         CompositeFileValidator.builder()
             .validator(new FileExistenceValidator())
             .validator(new FileExtensionValidator())
             .validator(new EmptyFileValidator())
-            .validator(new JsonSyntaxFileValidator(jsonObjectMapper))
+            .validator(new JsonSchemaFileValidator(FORMS_JSON_SCHEMA, resourceLoader, jsonObjectMapper))
             .build()
     );
   }
