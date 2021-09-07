@@ -43,6 +43,15 @@ public class BpmnFileValidatorTest {
   }
 
   @Test
+  public void shouldFailDueToMissingProcessName() {
+    var brokenProcessFile = getFileFromClasspath("registry-regulation/broken/process-empty-name.bpmn");
+
+    var errors = this.validator.validate(brokenProcessFile, ValidationContext.of(RegulationFileType.BPMN));
+
+    assertThat(errors, is(not(empty())));
+  }
+
+  @Test
   public void shouldFailDueToProcessModelValidationIssue() {
     var processFile = getFileFromClasspath("registry-regulation/correct/process.bpmn");
     var bpmnModel = Bpmn.readModelFromFile(processFile);
