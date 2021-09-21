@@ -16,13 +16,13 @@
 
   <groupId>com.epam.digital.data.platform</groupId>
   <artifactId>registry-regulations-validator-cli</artifactId>
-  <version>1.4.0-SNAPSHOT</version>
+  <version>1.5.0-SNAPSHOT</version>
 
   <properties>
     <java.version>11</java.version>
 
     <camunda.version>7.13.0</camunda.version>
-    <ddm-starter-logging.version>1.2.0</ddm-starter-logging.version>
+    <ddm-starter-logging.version>1.4.0</ddm-starter-logging.version>
     <json-schema-validator.version>1.0.57</json-schema-validator.version>
     <guava.version>29.0-jre</guava.version>
     <commons-cli.version>1.4</commons-cli.version>
