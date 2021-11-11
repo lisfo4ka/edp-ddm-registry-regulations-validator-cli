@@ -1,11 +1,17 @@
 # registry-regulations-validation-cli
 
+### Overview
+
+* Command-line registry regulation validation utility for Low-code Platform
+
+### Usage
+
 ```bash
-Usage: java -jar registry-regulations-validator-cli.jar
-       [--help] 
-       [--bp-auth-files=<arg>] [--bp-trembita-files=<arg>]
-       [--bpmn-files=<arg>] [--dmn-files=<arg>] [--form-files=<arg>]
-       [--global-vars-files=<arg>] [--roles-files=<arg>]
+Example: java -jar registry-regulations-validator-cli.jar
+         [--help] 
+         [--bp-auth-files=<arg>] [--bp-trembita-files=<arg>]
+         [--bpmn-files=<arg>] [--dmn-files=<arg>] [--form-files=<arg>]
+         [--global-vars-files=<arg>] [--roles-files=<arg>]
 Options:
     --help                     Help on utility usage
     --bp-auth-files=<arg>      BP authorization regulation files (accepts
@@ -22,3 +28,8 @@ Options:
                                (accepts multiple values separated by ',')
 Exit codes: 0 (success), 1 (system error), 10 (validation failure)
 ```
+
+### License
+
+The registry-regulations-validation-cli is released under version 2.0 of
+the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
