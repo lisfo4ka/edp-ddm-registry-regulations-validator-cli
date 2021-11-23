@@ -28,8 +28,12 @@ Options:
                                (accepts multiple values separated by ',')
 Exit codes: 0 (success), 1 (system error), 10 (validation failure)
 ```
+### Test execution
 
+* Tests could be run via maven command:
+    * `mvn verify` OR using appropriate functions of your IDE.
+    
 ### License
 
-The registry-regulations-validation-cli is released under version 2.0 of
-the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+The registry-regulations-validation-cli is Open Source software released under
+the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0).
