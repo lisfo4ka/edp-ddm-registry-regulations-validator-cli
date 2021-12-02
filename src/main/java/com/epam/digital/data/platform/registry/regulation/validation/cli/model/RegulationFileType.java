@@ -23,6 +23,7 @@ public enum RegulationFileType {
   GLOBAL_VARS("yml", "yaml"),
   BP_AUTH("yml", "yaml"),
   BP_TREMBITA("yml", "yaml"),
+  BP_TREMBITA_CONFIG("yml", "yaml"),
   ROLES("yml", "yaml"),
   BPMN("bpmn"),
   DMN("dmn"),

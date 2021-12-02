@@ -39,6 +39,8 @@ public class RegulationFilesValidator implements RegulationValidator<RegulationF
 
     regulationFiles.getBpTrembitaFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.BP_TREMBITA)));
 
+    regulationFiles.getBpTrembitaConfig().forEach(file -> errors.addAll(validate(file, RegulationFileType.BP_TREMBITA_CONFIG)));
+
     regulationFiles.getGlobalVarsFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.GLOBAL_VARS)));
 
     regulationFiles.getRolesFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.ROLES)));

@@ -32,6 +32,7 @@ public class CommandLineOptionsConverter {
         .globalVarsFiles(getFilesIfAny(CommandLineArg.GLOBAL_VARS, options))
         .bpAuthFiles(getFilesIfAny(CommandLineArg.BP_AUTH, options))
         .bpTrembitaFiles(getFilesIfAny(CommandLineArg.BP_TREMBITA, options))
+        .bpTrembitaConfig(getFilesIfAny(CommandLineArg.BP_TREMBITA_CONFIG, options))
         .rolesFiles(getFilesIfAny(CommandLineArg.ROLES, options))
         .bpmnFiles(getFilesIfAny(CommandLineArg.BPMN, options))
         .dmnFiles(getFilesIfAny(CommandLineArg.DMN, options))

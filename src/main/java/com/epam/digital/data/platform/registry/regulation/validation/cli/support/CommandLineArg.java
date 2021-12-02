@@ -21,6 +21,7 @@ public enum CommandLineArg {
   GLOBAL_VARS("global-vars-files"),
   BP_AUTH("bp-auth-files"),
   BP_TREMBITA("bp-trembita-files"),
+  BP_TREMBITA_CONFIG("bp-trembita-config"),
   ROLES("roles-files"),
   BPMN("bpmn-files"),
   DMN("dmn-files"),

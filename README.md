@@ -16,7 +16,8 @@ Options:
     --help                     Help on utility usage
     --bp-auth-files=<arg>      BP authorization regulation files (accepts
                                multiple values separated by ',')
-    --bp-trembita-files=<arg>   BP Trembita configuration regulation files
+    --bp-trembita-files=<arg>  BP Trembita configuration regulation file
+    --bp-trembita-config=<arg> BP Trembita registries configuration file
     --bpmn-files=<arg>         Business processes regulation files (accepts multiple values separated by ',')
                                (accepts multiple values separated by ',')
     --dmn-files=<arg>          Business rules regulation files (accepts

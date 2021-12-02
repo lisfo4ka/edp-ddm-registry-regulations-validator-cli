@@ -82,6 +82,13 @@ public class CommandLineArgsParser {
         .build());
 
     options.addOption(Option.builder()
+        .longOpt(CommandLineArg.BP_TREMBITA_CONFIG.getArgOptionName())
+        .hasArgs()
+        .numberOfArgs(1)
+        .desc("BP Trembita registries configuration")
+        .build());
+
+    options.addOption(Option.builder()
         .longOpt(CommandLineArg.ROLES.getArgOptionName())
         .numberOfArgs(2)
         .valueSeparator(',')

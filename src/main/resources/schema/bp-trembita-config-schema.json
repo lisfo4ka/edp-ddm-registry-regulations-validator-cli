@@ -1,0 +1,194 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "trembita-exchange-gateway": {
+      "type": "object",
+      "properties": {
+        "registries": {
+          "type": "object",
+          "minItems": 0,
+          "properties": {
+            "edr-registry": {
+              "type": "object",
+              "minItems": 0,
+              "properties": {
+                "trembita-url": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "user-id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "protocol-version": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "authorization-token": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "client": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "x-road-instance": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "member-class": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "member-code": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "subsystem-code": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "x-road-instance",
+                    "member-class",
+                    "member-code",
+                    "subsystem-code"
+                  ]
+                },
+                "service": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "x-road-instance": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "member-class": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "member-code": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "subsystem-code": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "x-road-instance",
+                    "member-class",
+                    "member-code",
+                    "subsystem-code"
+                  ]
+                }
+              },
+              "additionalProperties": true,
+              "required": [
+                "trembita-url",
+                "user-id",
+                "protocol-version",
+                "authorization-token",
+                "service",
+                "client"
+              ]
+            },
+            "dracs-registry": {
+              "type": "object",
+              "minItems": 0,
+              "properties": {
+                "trembita-url": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "user-id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "protocol-version": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "client": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "x-road-instance": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "member-class": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "member-code": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "subsystem-code": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "x-road-instance",
+                    "member-class",
+                    "member-code",
+                    "subsystem-code"
+                  ]
+                },
+                "service": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "x-road-instance": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "member-class": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "member-code": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "subsystem-code": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "x-road-instance",
+                    "member-class",
+                    "member-code",
+                    "subsystem-code"
+                  ]
+                }
+              },
+              "additionalProperties": true,
+              "required": [
+                "trembita-url",
+                "user-id",
+                "protocol-version",
+                "service",
+                "client"
+              ]
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "registries"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "trembita-exchange-gateway"
+  ]
+}

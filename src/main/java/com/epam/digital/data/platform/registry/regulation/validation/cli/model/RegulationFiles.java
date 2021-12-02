@@ -30,6 +30,8 @@ public class RegulationFiles {
   @Default
   private Collection<File> bpTrembitaFiles = new ArrayList<>();
   @Default
+  private Collection<File> bpTrembitaConfig = new ArrayList<>();
+  @Default
   private Collection<File> globalVarsFiles = new ArrayList<>();
   @Default
   private Collection<File> bpAuthFiles = new ArrayList<>();
@@ -44,6 +46,7 @@ public class RegulationFiles {
 
   public boolean isEmpty() {
     return bpTrembitaFiles.isEmpty()
+        && bpTrembitaConfig.isEmpty()
         && globalVarsFiles.isEmpty()
         && bpAuthFiles.isEmpty()
         && rolesFiles.isEmpty()

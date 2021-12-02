@@ -39,6 +39,7 @@ public class RegulationValidatorFactory {
 
   private static final String BP_AUTH_JSON_SCHEMA = "classpath:schema/bp-auth-schema.json";
   private static final String BP_TREMBITA_JSON_SCHEMA = "classpath:schema/bp-trembita-schema.json";
+  private static final String BP_TREMBITA_CONFIG_JSON_SCHEMA = "classpath:schema/bp-trembita-config-schema.json";
   private static final String ROLES_JSON_SCHEMA = "classpath:schema/roles-schema.json";
   private static final String GLOBAL_VARS_JSON_SCHEMA = "classpath:schema/global-vars-schema.json";
   private static final String FORMS_JSON_SCHEMA = "classpath:schema/forms-schema.json";
@@ -57,6 +58,7 @@ public class RegulationValidatorFactory {
     return Map.of(
         RegulationFileType.BP_AUTH, newBpAuthFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.BP_TREMBITA, newBpTrembitaFileValidator(resourceLoader, yamlObjectMapper),
+        RegulationFileType.BP_TREMBITA_CONFIG, newBpTrembitaConfigFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.ROLES, newRolesFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.GLOBAL_VARS, newGlobalVarsFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.FORMS, newFormsFileValidator(resourceLoader, jsonObjectMapper),
@@ -95,6 +97,17 @@ public class RegulationValidatorFactory {
                     .configurationLoader(new RegulationConfigurationLoader(yamlObjectMapper))
                     .validator(new BpTrembitaProcessUniquenessValidator())
                     .build())
+            .build()
+    );
+  }
+
+  private RegulationValidator<File> newBpTrembitaConfigFileValidator(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper) {
+    return decorate(
+        CompositeFileValidator.builder()
+            .validator(new FileExistenceValidator())
+            .validator(new FileExtensionValidator())
+            .validator(new EmptyFileValidator())
+            .validator(new JsonSchemaFileValidator(BP_TREMBITA_CONFIG_JSON_SCHEMA, resourceLoader, yamlObjectMapper))
             .build()
     );
   }
