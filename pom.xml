@@ -20,9 +20,9 @@
 
   <properties>
     <java.version>11</java.version>
-
+	  <log4j.version>2.16.0</log4j.version>
     <camunda.version>7.13.0</camunda.version>
-    <ddm-starter-logging.version>1.4.0</ddm-starter-logging.version>
+    <ddm-starter-logger.version>1.5.1-SNAPSHOT</ddm-starter-logger.version>
     <json-schema-validator.version>1.0.57</json-schema-validator.version>
     <guava.version>29.0-jre</guava.version>
     <commons-cli.version>1.4</commons-cli.version>
@@ -48,6 +48,16 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+	    <dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-api</artifactId>
+		    <version>${log4j.version}</version>
+		  </dependency>
+		  <dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>${log4j.version}</version>
+		  </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -55,7 +65,7 @@
     <dependency>
       <groupId>com.epam.digital.data.platform</groupId>
       <artifactId>ddm-starter-logger</artifactId>
-      <version>${ddm-starter-logging.version}</version>
+      <version>${ddm-starter-logger.version}</version>
     </dependency>
 
     <dependency>
