@@ -8,6 +8,13 @@
     },
     "supportEmail": {
       "type": "string"
+    },
+    "themeFile": {
+      "type": "string",
+      "enum": [
+        "white-theme.js",
+        "black-theme.js"
+      ]
     }
   },
   "additionalProperties": false,

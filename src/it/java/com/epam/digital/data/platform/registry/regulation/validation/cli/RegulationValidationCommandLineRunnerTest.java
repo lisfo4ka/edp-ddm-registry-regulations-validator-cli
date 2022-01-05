@@ -155,6 +155,15 @@ public class RegulationValidationCommandLineRunnerTest {
     Mockito.verify(systemExit, times(1)).validationFailure();
   }
 
+  @Test
+  public void shouldFailGlobalVarsDueToUnknownThemeFile() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+
+    validationRunner.run(argOf(CommandLineArg.GLOBAL_VARS, testResourcePathOf("registry-regulation/broken/global-vars-themeFile-broken.yml")));
+
+    Mockito.verify(systemExit, times(1)).validationFailure();
+  }
+
   private RegulationValidationCommandLineRunner newValidationRunner(ResourceLoader resourceLoader,
       CommandLineArgsParser commandLineArgsParser,
       CommandLineOptionsConverter commandLineOptionsConverter,
