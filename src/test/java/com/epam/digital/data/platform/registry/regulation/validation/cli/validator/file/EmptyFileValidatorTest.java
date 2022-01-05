@@ -28,8 +28,8 @@ import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -37,7 +37,7 @@ public class EmptyFileValidatorTest {
 
   private EmptyFileValidator validator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.validator = new EmptyFileValidator();
   }

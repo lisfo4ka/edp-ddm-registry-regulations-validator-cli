@@ -26,8 +26,8 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import java.io.File;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.xml.ModelValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -35,7 +35,7 @@ public class BpmnFileValidatorTest {
 
   private BpmnFileValidator validator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.validator = new BpmnFileValidator();
   }

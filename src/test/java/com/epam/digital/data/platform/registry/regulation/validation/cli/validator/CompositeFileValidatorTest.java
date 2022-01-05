@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFileType;
 import java.io.File;
 import java.util.Collections;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CompositeFileValidatorTest {
 

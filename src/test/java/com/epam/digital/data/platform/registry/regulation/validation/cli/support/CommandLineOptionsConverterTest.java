@@ -24,14 +24,14 @@ import static org.hamcrest.core.IsNot.not;
 import com.google.common.base.Joiner;
 import lombok.SneakyThrows;
 import org.apache.commons.cli.Options;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CommandLineOptionsConverterTest {
 
   private CommandLineOptionsConverter commandLineOptionsConverter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.commandLineOptionsConverter = new CommandLineOptionsConverter();
   }

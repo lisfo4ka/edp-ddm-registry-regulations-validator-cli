@@ -28,7 +28,7 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.model.B
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.io.File;
 import java.io.IOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RegulationConfigurationLoaderTest {
 

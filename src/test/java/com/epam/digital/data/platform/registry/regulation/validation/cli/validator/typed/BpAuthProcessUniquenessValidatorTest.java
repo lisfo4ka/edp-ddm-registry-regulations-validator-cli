@@ -26,7 +26,7 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.model.B
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.BpAuthConfiguration.Authorization;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.BpAuthConfiguration.ProcessDefinition;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BpAuthProcessUniquenessValidatorTest {
 

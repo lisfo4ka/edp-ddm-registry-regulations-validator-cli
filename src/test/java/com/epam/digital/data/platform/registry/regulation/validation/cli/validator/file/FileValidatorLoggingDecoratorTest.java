@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.RegulationValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationContext;
 import java.io.File;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FileValidatorLoggingDecoratorTest {
 

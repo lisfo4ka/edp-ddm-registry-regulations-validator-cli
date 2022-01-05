@@ -36,15 +36,16 @@ import lombok.SneakyThrows;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class RegulationValidationCommandLineRunnerTest {
 
   @Autowired
@@ -55,7 +56,7 @@ public class RegulationValidationCommandLineRunnerTest {
   private CommandLineOptionsConverter commandLineOptionsConverter;
   private RegulationValidationCommandLineRunner validationRunner;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.systemExit = mock(SystemExit.class);
     this.commandLineArgsParser = mock(CommandLineArgsParser.class);

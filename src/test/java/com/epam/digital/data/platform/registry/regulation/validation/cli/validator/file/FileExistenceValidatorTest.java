@@ -24,7 +24,7 @@ import static org.hamcrest.core.IsNot.not;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFileType;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationContext;
 import java.io.File;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FileExistenceValidatorTest {
 

@@ -30,7 +30,7 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.support
 import java.io.File;
 import java.io.IOException;
 import lombok.SneakyThrows;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TypedConfigurationValidatorTest {
 

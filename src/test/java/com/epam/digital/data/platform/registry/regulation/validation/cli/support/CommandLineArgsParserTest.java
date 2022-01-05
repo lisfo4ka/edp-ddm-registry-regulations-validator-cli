@@ -22,14 +22,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.commons.cli.MissingArgumentException;
 import org.apache.commons.cli.ParseException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CommandLineArgsParserTest {
 
   private CommandLineArgsParser commandLineArgsParser;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.commandLineArgsParser = new CommandLineArgsParser();
   }

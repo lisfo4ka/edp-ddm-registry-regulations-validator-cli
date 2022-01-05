@@ -25,7 +25,7 @@ import static org.hamcrest.core.IsNot.not;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.BpTrembitaConfiguration;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.BpTrembitaConfiguration.Trembita;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BpTrembitaProcessUniquenessValidatorTest {
 

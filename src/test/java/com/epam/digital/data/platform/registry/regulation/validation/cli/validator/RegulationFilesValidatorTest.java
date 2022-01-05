@@ -27,7 +27,7 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.model.R
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RegulationFilesValidatorTest {
 

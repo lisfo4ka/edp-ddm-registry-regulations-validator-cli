@@ -26,8 +26,8 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationContext;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.io.File;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassRelativeResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
@@ -37,7 +37,7 @@ public class JsonSchemaFileValidatorTest {
 
   private RegulationValidator<File> validator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.validator = new JsonSchemaFileValidator("classpath:schema/bp-auth-schema.json", resourceLoader, new YAMLMapper());
   }
