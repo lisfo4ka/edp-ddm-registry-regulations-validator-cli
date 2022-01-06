@@ -13,7 +13,7 @@
       "type": "string",
       "enum": [
         "white-theme.js",
-        "black-theme.js"
+        "dark-theme.js"
       ]
     }
   },
