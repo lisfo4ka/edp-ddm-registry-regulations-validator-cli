@@ -43,10 +43,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 @ExtendWith(SpringExtension.class)
-public class RegulationValidationCommandLineRunnerTest {
+class RegulationValidationCommandLineRunnerTest {
 
   @Autowired
   private ResourceLoader resourceLoader;
@@ -57,19 +56,20 @@ public class RegulationValidationCommandLineRunnerTest {
   private RegulationValidationCommandLineRunner validationRunner;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     this.systemExit = mock(SystemExit.class);
     this.commandLineArgsParser = mock(CommandLineArgsParser.class);
     this.commandLineOptionsConverter = mock(CommandLineOptionsConverter.class);
   }
 
   @Test
-  public void shouldDisplayHelpIfSpecified() throws ParseException {
+  void shouldDisplayHelpIfSpecified() throws ParseException {
     var options = new Options();
     options.addOption(Option.builder().longOpt("help").build());
     when(commandLineArgsParser.parse("--help")).thenReturn(options);
 
-    validationRunner = newValidationRunner(resourceLoader, commandLineArgsParser, commandLineOptionsConverter, systemExit);
+    validationRunner = newValidationRunner(resourceLoader, commandLineArgsParser,
+        commandLineOptionsConverter, systemExit);
 
     validationRunner.run("--help");
 
@@ -78,8 +78,9 @@ public class RegulationValidationCommandLineRunnerTest {
   }
 
   @Test
-  public void shouldPassIfNoRegulationFilesSpecified() {
-    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+  void shouldPassIfNoRegulationFilesSpecified() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
+        new CommandLineOptionsConverter(), systemExit);
 
     validationRunner.run("--bp-auth=");
 
@@ -87,12 +88,13 @@ public class RegulationValidationCommandLineRunnerTest {
   }
 
   @Test
-  public void shouldCompleteIfNoFilesPassed() throws ParseException {
+  void shouldCompleteIfNoFilesPassed() throws ParseException {
     var emptyOptions = new Options();
     when(commandLineArgsParser.parse()).thenReturn(emptyOptions);
     when(commandLineOptionsConverter.convert(emptyOptions)).thenReturn(emptyRegulationFiles());
 
-    validationRunner = newValidationRunner(resourceLoader, commandLineArgsParser, commandLineOptionsConverter, systemExit);
+    validationRunner = newValidationRunner(resourceLoader, commandLineArgsParser,
+        commandLineOptionsConverter, systemExit);
 
     validationRunner.run();
 
@@ -100,10 +102,11 @@ public class RegulationValidationCommandLineRunnerTest {
   }
 
   @Test
-  public void shouldDisplayHelpIfUnrecognizedOptionPassed() throws ParseException {
+  void shouldDisplayHelpIfUnrecognizedOptionPassed() throws ParseException {
     when(commandLineArgsParser.parse("-unrecognized")).thenThrow(ParseException.class);
 
-    validationRunner = newValidationRunner(resourceLoader, commandLineArgsParser, commandLineOptionsConverter, systemExit);
+    validationRunner = newValidationRunner(resourceLoader, commandLineArgsParser,
+        commandLineOptionsConverter, systemExit);
 
     validationRunner.run("-unrecognized");
 
@@ -112,8 +115,9 @@ public class RegulationValidationCommandLineRunnerTest {
   }
 
   @Test
-  public void shouldPassWithoutValidationErrorsLogged() {
-    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+  void shouldPassWithoutValidationErrorsLogged() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
+        new CommandLineOptionsConverter(), systemExit);
 
     validationRunner.run(correctRegistryRegulations());
 
@@ -121,17 +125,9 @@ public class RegulationValidationCommandLineRunnerTest {
   }
 
   @Test
-  public void shouldFailWithValidationErrorsLogged() {
-    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
-
-    validationRunner.run(brokenRegistryRegulations());
-
-    Mockito.verify(systemExit, times(1)).validationFailure();
-  }
-
-  @Test
-  public void shouldPassEmptyRegulationsWithoutValidationErrorsLogged() {
-    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+  void shouldPassEmptyRegulationsWithoutValidationErrorsLogged() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
+        new CommandLineOptionsConverter(), systemExit);
 
     validationRunner.run(emptyRegistryRegulations());
 
@@ -139,28 +135,34 @@ public class RegulationValidationCommandLineRunnerTest {
   }
 
   @Test
-  public void shouldFailBpAuthDueToDuplicates() {
-    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+  void shouldFailBpAuthDueToDuplicates() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
+        new CommandLineOptionsConverter(), systemExit);
 
-    validationRunner.run(argOf(CommandLineArg.BP_AUTH, testResourcePathOf("registry-regulation/broken/bp-auth-duplicates.yml")));
-
-    Mockito.verify(systemExit, times(1)).validationFailure();
-  }
-
-  @Test
-  public void shouldFailBpTrembitaDueToDuplicates() {
-    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
-
-    validationRunner.run(argOf(CommandLineArg.BP_TREMBITA, testResourcePathOf("registry-regulation/broken/bp-trembita-duplicates.yml")));
+    validationRunner.run(argOf(CommandLineArg.BP_AUTH,
+        testResourcePathOf("registry-regulation/broken/bp-auth-duplicates.yml")));
 
     Mockito.verify(systemExit, times(1)).validationFailure();
   }
 
   @Test
-  public void shouldFailGlobalVarsDueToUnknownThemeFile() {
-    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+  void shouldFailBpTrembitaDueToDuplicates() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
+        new CommandLineOptionsConverter(), systemExit);
 
-    validationRunner.run(argOf(CommandLineArg.GLOBAL_VARS, testResourcePathOf("registry-regulation/broken/global-vars-themeFile-broken.yml")));
+    validationRunner.run(argOf(CommandLineArg.BP_TREMBITA,
+        testResourcePathOf("registry-regulation/broken/bp-trembita-duplicates.yml")));
+
+    Mockito.verify(systemExit, times(1)).validationFailure();
+  }
+
+  @Test
+  void shouldFailGlobalVarsDueToUnknownThemeFile() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
+        new CommandLineOptionsConverter(), systemExit);
+
+    validationRunner.run(argOf(CommandLineArg.GLOBAL_VARS,
+        testResourcePathOf("registry-regulation/broken/global-vars-themeFile-broken.yml")));
 
     Mockito.verify(systemExit, times(1)).validationFailure();
   }
@@ -185,21 +187,6 @@ public class RegulationValidationCommandLineRunnerTest {
         argOf(CommandLineArg.BPMN, testResourcePathOf("registry-regulation/correct/process.bpmn")),
         argOf(CommandLineArg.DMN, testResourcePathOf("registry-regulation/correct/rule.dmn")),
         argOf(CommandLineArg.FORMS, testResourcePathOf("registry-regulation/correct/ui-form.json"))
-    };
-  }
-
-  private String[] brokenRegistryRegulations() {
-    return new String[]{
-        argOf(CommandLineArg.GLOBAL_VARS, testResourcePathOf("registry-regulation/broken/global-vars-broken.yml")),
-        argOf(CommandLineArg.BP_AUTH,
-            testResourcePathOf("registry-regulation/broken/bp-auth-broken.yml"),
-            testResourcePathOf("registry-regulation/empty/bp-auth-empty.yml")),
-        argOf(CommandLineArg.BP_TREMBITA, testResourcePathOf("registry-regulation/broken/bp-trembita-broken.yml")),
-        argOf(CommandLineArg.BP_TREMBITA_CONFIG, testResourcePathOf("registry-regulation/broken/bp-trembita-broken.yml")),
-        argOf(CommandLineArg.ROLES, testResourcePathOf("registry-regulation/broken/roles-broken.yml")),
-        argOf(CommandLineArg.BPMN, testResourcePathOf("registry-regulation/broken/process-broken.bpmn")),
-        argOf(CommandLineArg.DMN, testResourcePathOf("registry-regulation/broken/rule-broken.dmn")),
-        argOf(CommandLineArg.FORMS, testResourcePathOf("registry-regulation/broken/ui-form-broken.json"))
     };
   }
 

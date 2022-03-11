@@ -2,10 +2,6 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "dataFactoryBaseUrl": {
-      "type": "string",
-      "pattern": "^http(s?)\\:\\/\\/[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*(:[0-9]+)*$"
-    },
     "supportEmail": {
       "type": "string"
     },
@@ -17,8 +13,5 @@
       ]
     }
   },
-  "additionalProperties": false,
-  "required": [
-    "dataFactoryBaseUrl"
-  ]
+  "additionalProperties": false
 }
