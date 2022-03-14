@@ -22,7 +22,9 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
@@ -43,9 +45,16 @@ public class BpmnFileValidator implements RegulationValidator<File> {
       return validateProcessModel(bpmnModel, regulationFile, validationContext);
     } catch (BpmnModelException | ModelParseException ex) {
       return Collections.singleton(
-          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, "BPMN file parsing failure", ex)
+          ValidationError.of(validationContext.getRegulationFileType(), regulationFile, createErrorMsg(ex), ex)
       );
     }
+  }
+
+  private String createErrorMsg(Throwable ex) {
+    return new StringJoiner(", ")
+        .add("BPMN file parsing failure")
+        .add(Objects.nonNull(ex.getCause()) ? ex.getCause().getMessage() : ex.getMessage())
+        .toString();
   }
 
   private Set<ValidationError> validateProcessModel(BpmnModelInstance bpmnModel, File regulationFile, ValidationContext validationContext) {

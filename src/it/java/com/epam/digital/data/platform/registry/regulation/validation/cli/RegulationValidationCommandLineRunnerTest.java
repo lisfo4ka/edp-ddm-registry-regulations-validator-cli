@@ -135,6 +135,19 @@ class RegulationValidationCommandLineRunnerTest {
   }
 
   @Test
+  void shouldFailBpmnDueToDuplicatedProcessId() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(), new CommandLineOptionsConverter(), systemExit);
+
+    validationRunner.run(correctRegistryRegulations());
+    validationRunner.run(argOf(CommandLineArg.BPMN,
+        testResourcePathOf("registry-regulation/broken/test-duplicated-process-id-bp-1.bpmn"),
+        testResourcePathOf("registry-regulation/broken/test-duplicated-process-id-bp-2.bpmn"))
+    );
+
+    Mockito.verify(systemExit, times(1)).validationFailure();
+  }
+
+  @Test
   void shouldFailBpAuthDueToDuplicates() {
     validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
         new CommandLineOptionsConverter(), systemExit);

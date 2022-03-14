@@ -59,6 +59,18 @@ public class BpmnFileValidatorTest {
   }
 
   @Test
+  public void shouldFailProcessParsingDueToDuplicatedProcessId() {
+    var brokenProcessFile = getFileFromClasspath(
+        "registry-regulation/broken/processes-duplicated-id.bpmn");
+
+    var errors = this.validator.validate(brokenProcessFile, ValidationContext.of(RegulationFileType.BPMN));
+
+    assertThat(errors, is(not(empty())));
+    assertThat(errors.iterator().next().getErrorMessage()
+        .contains("There are multiple occurrences of ID value 'Process_1"), is(true));
+  }
+
+  @Test
   public void shouldFailDueToMissingProcessName() {
     var brokenProcessFile = getFileFromClasspath("registry-regulation/broken/process-empty-name.bpmn");
 

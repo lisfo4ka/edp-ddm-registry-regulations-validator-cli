@@ -26,6 +26,7 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.model.R
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFiles;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +42,7 @@ public class RegulationFilesValidatorTest {
     RegulationValidator<File> formsFileValidator = mock(RegulationValidator.class);
     RegulationValidator<File> bpmnFileValidator = mock(RegulationValidator.class);
     RegulationValidator<File> dmnFileValidator = mock(RegulationValidator.class);
+    RegulationValidator<Collection<File>> bpmnFilesValidator = mock(RegulationValidator.class);
 
     var validators = Map.of(
         RegulationFileType.BP_AUTH, bpAuthFileValidator,
@@ -51,8 +53,11 @@ public class RegulationFilesValidatorTest {
         RegulationFileType.BPMN, bpmnFileValidator,
         RegulationFileType.DMN, dmnFileValidator
     );
+    var groupValidators = Map.of(
+        RegulationFileType.BPMN, bpmnFilesValidator
+    );
 
-    var regulationFilesValidator = new RegulationFilesValidator(validators);
+    var regulationFilesValidator = new RegulationFilesValidator(validators, groupValidators);
 
     var regulationFiles = RegulationFiles.builder()
         .bpAuthFiles(singleFile())
@@ -73,6 +78,7 @@ public class RegulationFilesValidatorTest {
     verify(formsFileValidator, times(1)).validate(any(), any());
     verify(bpmnFileValidator, times(1)).validate(any(), any());
     verify(dmnFileValidator, times(1)).validate(any(), any());
+    verify(bpmnFilesValidator, times(1)).validate(any(), any());
   }
 
   private ArrayList<File> singleFile() {

@@ -22,16 +22,19 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.model.R
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFiles;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.RegulationConfigurationLoader;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpmnFileValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpmnFileGroupUniqueProcessIdValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.dmn.DmnFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.EmptyFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileExistenceValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileExtensionValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileValidatorLoggingDecorator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileGroupValidatorLoggingDecorator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.json.JsonSchemaFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpAuthProcessUniquenessValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpTrembitaProcessUniquenessValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 import org.springframework.core.io.ResourceLoader;
 
@@ -45,13 +48,15 @@ public class RegulationValidatorFactory {
   private static final String FORMS_JSON_SCHEMA = "classpath:schema/forms-schema.json";
 
   private final Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators;
+  private final Map<RegulationFileType, RegulationValidator<Collection<File>>> groupRegulationTypeValidators;
 
   public RegulationValidatorFactory(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper) {
     this.regulationTypeValidators = regulationTypeValidators(resourceLoader, yamlObjectMapper, jsonObjectMapper);
+    this.groupRegulationTypeValidators = regulationTypeGroupValidators();
   }
 
   public RegulationValidator<RegulationFiles> newRegulationFilesValidator() {
-    return new RegulationFilesValidator(regulationTypeValidators);
+    return new RegulationFilesValidator(regulationTypeValidators, groupRegulationTypeValidators);
   }
 
   private Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper) {
@@ -64,6 +69,20 @@ public class RegulationValidatorFactory {
         RegulationFileType.FORMS, newFormsFileValidator(resourceLoader, jsonObjectMapper),
         RegulationFileType.BPMN, newBpmnFileValidator(),
         RegulationFileType.DMN, newDmnFileValidator()
+    );
+  }
+
+  private Map<RegulationFileType, RegulationValidator<Collection<File>>> regulationTypeGroupValidators() {
+    return Map.of(
+        RegulationFileType.BPMN, newBpmnFileGroupValidator()
+    );
+  }
+
+  private RegulationValidator<Collection<File>> newBpmnFileGroupValidator() {
+    return decorateGroupValidator(
+        CompositeFileGroupValidator.builder()
+            .validator(new BpmnFileGroupUniqueProcessIdValidator())
+            .build()
     );
   }
 
@@ -169,4 +188,8 @@ public class RegulationValidatorFactory {
     return FileValidatorLoggingDecorator.wrap(validator);
   }
 
+  private RegulationValidator<Collection<File>> decorateGroupValidator(
+      RegulationValidator<Collection<File>> validator) {
+    return FileGroupValidatorLoggingDecorator.wrap(validator);
+  }
 }

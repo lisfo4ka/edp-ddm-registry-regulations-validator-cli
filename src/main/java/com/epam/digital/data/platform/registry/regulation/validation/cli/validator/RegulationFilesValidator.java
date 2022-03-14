@@ -18,7 +18,9 @@ package com.epam.digital.data.platform.registry.regulation.validation.cli.valida
 
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFileType;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFiles;
+import com.google.common.collect.Sets;
 import java.io.File;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,9 +28,13 @@ import java.util.Set;
 public class RegulationFilesValidator implements RegulationValidator<RegulationFiles> {
 
   private final Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators;
+  private final Map<RegulationFileType, RegulationValidator<Collection<File>>> groupRegulationTypeValidators;
 
-  public RegulationFilesValidator(Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators) {
+  public RegulationFilesValidator(
+      Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators,
+      Map<RegulationFileType, RegulationValidator<Collection<File>>> groupRegulationTypeValidators) {
     this.regulationTypeValidators = regulationTypeValidators;
+    this.groupRegulationTypeValidators = groupRegulationTypeValidators;
   }
 
   @Override
@@ -45,7 +51,7 @@ public class RegulationFilesValidator implements RegulationValidator<RegulationF
 
     regulationFiles.getRolesFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.ROLES)));
 
-    regulationFiles.getBpmnFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.BPMN)));
+    errors.addAll(validateBpmnFiles(regulationFiles.getBpmnFiles()));
 
     regulationFiles.getDmnFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.DMN)));
 
@@ -57,5 +63,16 @@ public class RegulationFilesValidator implements RegulationValidator<RegulationF
   private Set<ValidationError> validate(File file, RegulationFileType regulationFileType) {
     var validator = this.regulationTypeValidators.get(regulationFileType);
     return validator.validate(file, ValidationContext.of(regulationFileType));
+  }
+
+  private Set<ValidationError> validateBpmnFiles(Collection<File> bpmnFiles) {
+    Set<ValidationError> errors = Sets.newHashSet();
+    bpmnFiles.forEach(file -> errors.addAll(validate(file, RegulationFileType.BPMN)));
+
+    if (errors.isEmpty()) {
+      var groupValidator = groupRegulationTypeValidators.get(RegulationFileType.BPMN);
+      errors.addAll(groupValidator.validate(bpmnFiles, ValidationContext.of(RegulationFileType.BPMN)));
+    }
+    return errors;
   }
 }
