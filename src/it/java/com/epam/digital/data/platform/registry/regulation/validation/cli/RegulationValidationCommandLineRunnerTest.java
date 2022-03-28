@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,24 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
+import com.deliveredtechnologies.rulebook.model.RuleBook;
+import com.deliveredtechnologies.rulebook.model.runner.RuleBookRunner;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFiles;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineArg;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineArgsParser;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineOptionsConverter;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.SystemExit;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.RegulationValidatorFactory;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationError;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -180,14 +186,52 @@ class RegulationValidationCommandLineRunnerTest {
     Mockito.verify(systemExit, times(1)).validationFailure();
   }
 
+  @Test
+  void shouldFailSettingYamlFileDueToInvalidParams() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
+            new CommandLineOptionsConverter(), systemExit);
+    validationRunner.run(argOf(CommandLineArg.SETTINGS,
+            testResourcePathOf("registry-regulation/broken/settings.yaml")));
+
+    Mockito.verify(systemExit, times(1)).validationFailure();
+  }
+
+  @Test
+  void shouldFailMainLiquibaseFileDueToInvalidParams() {
+    validationRunner = newValidationRunner(resourceLoader, new CommandLineArgsParser(),
+            new CommandLineOptionsConverter(), systemExit);
+    validationRunner.run(argOf(CommandLineArg.LIQUIBASE,
+            testResourcePathOf("registry-regulation/broken/test-main-liquibase.xml")));
+
+    Mockito.verify(systemExit, times(1)).validationFailure();
+  }
+
   private RegulationValidationCommandLineRunner newValidationRunner(ResourceLoader resourceLoader,
       CommandLineArgsParser commandLineArgsParser,
       CommandLineOptionsConverter commandLineOptionsConverter,
       SystemExit systemExit) {
     return new RegulationValidationCommandLineRunner(
-        new RegulationValidatorFactory(resourceLoader, new YAMLMapper(), new JsonMapper()),
+        new RegulationValidatorFactory(resourceLoader, new YAMLMapper(), new JsonMapper(),
+                settingsYamlRuleBook(), mainLiquibaseRuleBook()),
         commandLineArgsParser, commandLineOptionsConverter, systemExit
     );
+  }
+
+  private RuleBook<Set<ValidationError>> settingsYamlRuleBook() {
+    return getRuleBookRunner(
+            "com.epam.digital.data.platform.registry.regulation.validation.cli.validator.settings.rules");
+  }
+
+  private RuleBook<Set<ValidationError>> mainLiquibaseRuleBook() {
+    return getRuleBookRunner(
+            "com.epam.digital.data.platform.registry.regulation.validation.cli.validator.mainliquibase.rules");
+  }
+
+  @SuppressWarnings("unchecked")
+  private RuleBook<Set<ValidationError>> getRuleBookRunner(String rulePackage)  {
+    var springAwareRuleBookRunner = new RuleBookRunner(rulePackage);
+    springAwareRuleBookRunner.setDefaultResult(Sets.newHashSet());
+    return springAwareRuleBookRunner;
   }
 
   private String[] correctRegistryRegulations() {
@@ -199,7 +243,9 @@ class RegulationValidationCommandLineRunnerTest {
         argOf(CommandLineArg.ROLES, testResourcePathOf("registry-regulation/correct/roles.yml")),
         argOf(CommandLineArg.BPMN, testResourcePathOf("registry-regulation/correct/process.bpmn")),
         argOf(CommandLineArg.DMN, testResourcePathOf("registry-regulation/correct/rule.dmn")),
-        argOf(CommandLineArg.FORMS, testResourcePathOf("registry-regulation/correct/ui-form.json"))
+        argOf(CommandLineArg.FORMS, testResourcePathOf("registry-regulation/correct/ui-form.json")),
+        argOf(CommandLineArg.SETTINGS, testResourcePathOf("registry-regulation/correct/settings.yaml")),
+        argOf(CommandLineArg.LIQUIBASE, testResourcePathOf("registry-regulation/correct/test-main-liquibase.xml"))
     };
   }
 

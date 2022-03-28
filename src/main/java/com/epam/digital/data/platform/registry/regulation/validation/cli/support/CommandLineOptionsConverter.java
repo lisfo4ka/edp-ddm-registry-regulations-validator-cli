@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ public class CommandLineOptionsConverter {
         .bpmnFiles(getFilesIfAny(CommandLineArg.BPMN, options))
         .dmnFiles(getFilesIfAny(CommandLineArg.DMN, options))
         .formFiles(getFilesIfAny(CommandLineArg.FORMS, options))
+        .settingsFiles(getFilesIfAny(CommandLineArg.SETTINGS, options))
+        .liquibaseFiles(getFilesIfAny(CommandLineArg.LIQUIBASE, options))
         .build();
   }
 

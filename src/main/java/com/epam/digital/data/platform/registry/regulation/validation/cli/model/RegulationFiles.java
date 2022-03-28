@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,10 @@ public class RegulationFiles {
   private Collection<File> dmnFiles = new ArrayList<>();
   @Default
   private Collection<File> formFiles = new ArrayList<>();
+  @Default
+  private Collection<File> settingsFiles = new ArrayList<>();
+  @Default
+  private Collection<File> liquibaseFiles = new ArrayList<>();
 
   public boolean isEmpty() {
     return bpTrembitaFiles.isEmpty()
@@ -52,6 +56,8 @@ public class RegulationFiles {
         && rolesFiles.isEmpty()
         && bpmnFiles.isEmpty()
         && dmnFiles.isEmpty()
-        && formFiles.isEmpty();
+        && formFiles.isEmpty()
+        && settingsFiles.isEmpty()
+        && liquibaseFiles.isEmpty();
   }
 }

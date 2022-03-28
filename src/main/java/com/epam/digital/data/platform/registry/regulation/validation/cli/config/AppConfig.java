@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,25 @@
 
 package com.epam.digital.data.platform.registry.regulation.validation.cli.config;
 
+import com.deliveredtechnologies.rulebook.model.RuleBook;
+import com.deliveredtechnologies.rulebook.spring.SpringAwareRuleBookRunner;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.RegulationValidationCommandLineRunner;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineArgsParser;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.CommandLineOptionsConverter;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.SystemExit;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.RegulationValidatorFactory;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.ValidationError;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
+
+import java.util.Set;
 
 @Configuration
 public class AppConfig {
@@ -42,7 +48,8 @@ public class AppConfig {
   @Bean
   @Autowired
   public RegulationValidatorFactory registryRegulationValidatorFactory(ResourceLoader resourceLoader) {
-    return new RegulationValidatorFactory(resourceLoader, yamlObjectMapper(), jsonObjectMapper());
+    return new RegulationValidatorFactory(resourceLoader, yamlObjectMapper(), jsonObjectMapper(),
+            settingsYamlRuleBook(), mainLiquibaseRuleBook());
   }
 
   @Bean
@@ -57,5 +64,25 @@ public class AppConfig {
 
   private JsonMapper jsonObjectMapper() {
     return new JsonMapper();
+  }
+
+  @Bean
+  public RuleBook<Set<ValidationError>> settingsYamlRuleBook() {
+    return getRuleBookRunner(
+            "com.epam.digital.data.platform.registry.regulation.validation.cli.validator.settings.rules");
+  }
+
+  @Bean
+  public RuleBook<Set<ValidationError>> mainLiquibaseRuleBook() {
+    return getRuleBookRunner(
+            "com.epam.digital.data.platform.registry.regulation.validation.cli.validator.mainliquibase.rules");
+  }
+
+  @SuppressWarnings("unchecked")
+  private RuleBook<Set<ValidationError>> getRuleBookRunner(String rulePackage)  {
+    var springAwareRuleBookRunner = new SpringAwareRuleBookRunner(rulePackage);
+
+    springAwareRuleBookRunner.setDefaultResult(Sets.newHashSet());
+    return springAwareRuleBookRunner;
   }
 }

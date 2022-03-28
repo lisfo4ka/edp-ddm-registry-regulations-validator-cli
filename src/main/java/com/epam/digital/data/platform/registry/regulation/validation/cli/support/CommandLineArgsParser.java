@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,6 +114,20 @@ public class CommandLineArgsParser {
         .hasArgs()
         .valueSeparator(',')
         .desc("UI forms regulation files (accepts multiple values separated by ',')")
+        .build());
+
+    options.addOption(Option.builder()
+        .longOpt(CommandLineArg.SETTINGS.getArgOptionName())
+        .hasArgs()
+        .numberOfArgs(1)
+        .desc("Settings regulation files with yml, yaml extensions")
+        .build());
+
+    options.addOption(Option.builder()
+        .longOpt(CommandLineArg.LIQUIBASE.getArgOptionName())
+        .hasArgs()
+        .numberOfArgs(1)
+        .desc("Liquibase regulation files introduce Database change set with xml extensions")
         .build());
 
     options.addOption(Option.builder()

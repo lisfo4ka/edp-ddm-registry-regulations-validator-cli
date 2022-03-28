@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.epam.digital.data.platform.registry.regulation.validation.cli.validator;
 
+import com.deliveredtechnologies.rulebook.model.RuleBook;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.BpAuthConfiguration;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.BpTrembitaConfiguration;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFileType;
@@ -30,12 +31,16 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileValidatorLoggingDecorator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileGroupValidatorLoggingDecorator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.json.JsonSchemaFileValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.mainliquibase.MainLiquibaseRulesValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.settings.SettingsYamlRulesValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpAuthProcessUniquenessValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpTrembitaProcessUniquenessValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
+
 import org.springframework.core.io.ResourceLoader;
 
 public class RegulationValidatorFactory {
@@ -50,8 +55,10 @@ public class RegulationValidatorFactory {
   private final Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators;
   private final Map<RegulationFileType, RegulationValidator<Collection<File>>> groupRegulationTypeValidators;
 
-  public RegulationValidatorFactory(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper) {
-    this.regulationTypeValidators = regulationTypeValidators(resourceLoader, yamlObjectMapper, jsonObjectMapper);
+  public RegulationValidatorFactory(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper,
+                                      RuleBook<Set<ValidationError>> settingsYamlRuleBook, RuleBook<Set<ValidationError>> mainLiquibaseRuleBook) {
+    this.regulationTypeValidators = regulationTypeValidators(resourceLoader, yamlObjectMapper, jsonObjectMapper,
+                settingsYamlRuleBook, mainLiquibaseRuleBook);
     this.groupRegulationTypeValidators = regulationTypeGroupValidators();
   }
 
@@ -59,7 +66,9 @@ public class RegulationValidatorFactory {
     return new RegulationFilesValidator(regulationTypeValidators, groupRegulationTypeValidators);
   }
 
-  private Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper) {
+  private Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper,
+                                                                                      ObjectMapper jsonObjectMapper, RuleBook<Set<ValidationError>> settingsYamlRuleBook,
+                                                                                      RuleBook<Set<ValidationError>> mainLiquibaseRuleBook) {
     return Map.of(
         RegulationFileType.BP_AUTH, newBpAuthFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.BP_TREMBITA, newBpTrembitaFileValidator(resourceLoader, yamlObjectMapper),
@@ -68,7 +77,10 @@ public class RegulationValidatorFactory {
         RegulationFileType.GLOBAL_VARS, newGlobalVarsFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.FORMS, newFormsFileValidator(resourceLoader, jsonObjectMapper),
         RegulationFileType.BPMN, newBpmnFileValidator(),
-        RegulationFileType.DMN, newDmnFileValidator()
+        RegulationFileType.DMN, newDmnFileValidator(),
+        RegulationFileType.SETTINGS, newSettingsFileValidator(yamlObjectMapper, settingsYamlRuleBook),
+        RegulationFileType.LIQUIBASE, newMainLiquibaseFileValidator(mainLiquibaseRuleBook)
+
     );
   }
 
@@ -191,5 +203,25 @@ public class RegulationValidatorFactory {
   private RegulationValidator<Collection<File>> decorateGroupValidator(
       RegulationValidator<Collection<File>> validator) {
     return FileGroupValidatorLoggingDecorator.wrap(validator);
+  }
+  private RegulationValidator<File> newSettingsFileValidator(ObjectMapper jsonObjectMapper,
+                                                             RuleBook<Set<ValidationError>> settingsYamlRuleBook) {
+    return decorate(
+            CompositeFileValidator.builder()
+                    .validator(new FileExistenceValidator())
+                    .validator(new FileExtensionValidator())
+                    .validator(new SettingsYamlRulesValidator(jsonObjectMapper, settingsYamlRuleBook))
+                    .build()
+    );
+  }
+
+  private RegulationValidator<File> newMainLiquibaseFileValidator(RuleBook<Set<ValidationError>> mainLiquibaseRuleBook) {
+    return decorate(
+            CompositeFileValidator.builder()
+                    .validator(new FileExistenceValidator())
+                    .validator(new FileExtensionValidator())
+                    .validator(new MainLiquibaseRulesValidator(mainLiquibaseRuleBook))
+                    .build()
+    );
   }
 }
