@@ -35,6 +35,7 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.settings.SettingsYamlRulesValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpAuthProcessUniquenessValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpTrembitaProcessUniquenessValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.var.GlobalVarsFileValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.Collection;
@@ -160,7 +161,7 @@ public class RegulationValidatorFactory {
             .validator(new FileExistenceValidator())
             .validator(new FileExtensionValidator())
             .validator(new EmptyFileValidator())
-            .validator(new JsonSchemaFileValidator(GLOBAL_VARS_JSON_SCHEMA, resourceLoader, yamlObjectMapper))
+            .validator(new GlobalVarsFileValidator(GLOBAL_VARS_JSON_SCHEMA, resourceLoader, yamlObjectMapper))
             .build()
     );
   }

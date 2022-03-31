@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,5 +106,19 @@ public class CommandLineArgsParserTest {
   @Test
   public void shouldFailWithUnrecognizedOption() {
     assertThrows(ParseException.class, () -> commandLineArgsParser.parse("--unrecognized"));
+  }
+
+  @Test
+  void shouldSupportSettingsYamlOption() throws ParseException {
+    var options = commandLineArgsParser.parse("--settings-files=settings.yaml");
+
+    assertTrue(options.hasOption("settings-files"));
+  }
+
+  @Test
+  void shouldSupportLiquibaseOption() throws ParseException {
+    var options = commandLineArgsParser.parse("--liquibase-files=main-liquibase.xml");
+
+    assertTrue(options.hasOption("liquibase-files"));
   }
 }

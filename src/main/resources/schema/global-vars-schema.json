@@ -3,7 +3,8 @@
   "type": "object",
   "properties": {
     "supportEmail": {
-      "type": "string"
+      "type": "string",
+      "format": "email"
     },
     "themeFile": {
       "type": "string",

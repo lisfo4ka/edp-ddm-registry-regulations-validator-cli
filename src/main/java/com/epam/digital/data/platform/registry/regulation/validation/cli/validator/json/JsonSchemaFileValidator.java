@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class JsonSchemaFileValidator implements RegulationValidator<File> {
     }
   }
 
-  private Set<ValidationError> validateSchema(File regulationFile, JsonNode jsonNode, RegulationFileType regulationFileType) {
+  protected Set<ValidationError> validateSchema(File regulationFile, JsonNode jsonNode, RegulationFileType regulationFileType) {
     var validationMessages = schema.validate(jsonNode);
     var errors = new LinkedHashSet<ValidationError>();
     validationMessages.forEach(
