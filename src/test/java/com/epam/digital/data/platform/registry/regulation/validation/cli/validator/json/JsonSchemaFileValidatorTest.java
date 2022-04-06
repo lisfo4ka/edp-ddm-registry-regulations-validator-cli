@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2022 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,20 +31,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassRelativeResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
-public class JsonSchemaFileValidatorTest {
+public abstract class JsonSchemaFileValidatorTest {
 
   private final ResourceLoader resourceLoader = new ClassRelativeResourceLoader(getClass());
+
+  protected String shouldPassSchemaValidationFile;
+  protected String shouldFailSchemaValidationFile;
+  protected String schemaLocation;
+  protected RegulationFileType regulationFileType;
 
   private RegulationValidator<File> validator;
 
   @BeforeEach
   public void setUp() {
-    this.validator = new JsonSchemaFileValidator("classpath:schema/bp-auth-schema.json", resourceLoader, new YAMLMapper());
+    this.validator = new JsonSchemaFileValidator(schemaLocation, resourceLoader, new YAMLMapper());
   }
 
   @Test
-  public void shouldPassSchemaValidation() {
-    var processFile = getFileFromClasspath("registry-regulation/correct/bp-auth.yml");
+  void shouldPassSchemaValidation() {
+    var processFile = getFileFromClasspath(shouldPassSchemaValidationFile);
 
     var errors = validator.validate(processFile, ValidationContext.of(RegulationFileType.BP_AUTH));
 
@@ -52,8 +57,8 @@ public class JsonSchemaFileValidatorTest {
   }
 
   @Test
-  public void shouldFailSchemaValidation() {
-    var processFile = getFileFromClasspath("registry-regulation/broken/bp-auth-broken.yml");
+  void shouldFailSchemaValidation() {
+    var processFile = getFileFromClasspath(shouldFailSchemaValidationFile);
 
     var errors = validator.validate(processFile, ValidationContext.of(RegulationFileType.BP_AUTH));
 
