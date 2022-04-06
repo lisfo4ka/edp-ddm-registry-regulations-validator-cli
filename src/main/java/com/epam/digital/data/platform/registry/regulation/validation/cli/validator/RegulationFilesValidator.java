@@ -29,12 +29,15 @@ public class RegulationFilesValidator implements RegulationValidator<RegulationF
 
   private final Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators;
   private final Map<RegulationFileType, RegulationValidator<Collection<File>>> groupRegulationTypeValidators;
+  private final Map<RegulationFileType, RegulationValidator<RegulationFiles>> globalRegulationTypeValidators;
 
   public RegulationFilesValidator(
-      Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators,
-      Map<RegulationFileType, RegulationValidator<Collection<File>>> groupRegulationTypeValidators) {
+          Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators,
+          Map<RegulationFileType, RegulationValidator<Collection<File>>> groupRegulationTypeValidators,
+          Map<RegulationFileType, RegulationValidator<RegulationFiles>> globalRegulationTypeValidators) {
     this.regulationTypeValidators = regulationTypeValidators;
     this.groupRegulationTypeValidators = groupRegulationTypeValidators;
+    this.globalRegulationTypeValidators = globalRegulationTypeValidators;
   }
 
   @Override
@@ -61,7 +64,15 @@ public class RegulationFilesValidator implements RegulationValidator<RegulationF
 
     regulationFiles.getLiquibaseFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.LIQUIBASE)));
 
+    errors.addAll(validateGlobalFiles(regulationFiles, RegulationFileType.BP_AUTH_TO_BPMN));
+
+    errors.addAll(validateGlobalFiles(regulationFiles, RegulationFileType.BP_TREMBITA_TO_BPMN));
+
     return errors;
+  }
+
+  private Collection<ValidationError> validateGlobalFiles(RegulationFiles regulationFiles, RegulationFileType regulationFileType) {
+    return globalRegulationTypeValidators.get(regulationFileType).validate(regulationFiles, ValidationContext.of(regulationFileType));
   }
 
   private Set<ValidationError> validate(File file, RegulationFileType regulationFileType) {

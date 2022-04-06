@@ -29,7 +29,9 @@ public enum RegulationFileType {
   DMN("dmn"),
   FORMS("json"),
   SETTINGS("yml", "yaml"),
-  LIQUIBASE("xml");
+  LIQUIBASE("xml"),
+  BP_TREMBITA_TO_BPMN("yml", "yaml", "bpmn"),
+  BP_AUTH_TO_BPMN("yml", "yaml", "bpmn");
 
   private final String[] fileExtensions;
 

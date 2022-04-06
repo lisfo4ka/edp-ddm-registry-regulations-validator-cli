@@ -22,17 +22,15 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.model.B
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFileType;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.model.RegulationFiles;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.support.RegulationConfigurationLoader;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpAuthToBpmnProcessExistenceValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpmnFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpmnFileGroupUniqueProcessIdValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.dmn.DmnFileValidator;
-import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.EmptyFileValidator;
-import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileExistenceValidator;
-import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileExtensionValidator;
-import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileValidatorLoggingDecorator;
-import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileGroupValidatorLoggingDecorator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.*;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.json.JsonSchemaFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.mainliquibase.MainLiquibaseRulesValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.settings.SettingsYamlRulesValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpTrembitaToBpmnProcessExistenceValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpAuthProcessUniquenessValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpTrembitaProcessUniquenessValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.var.GlobalVarsFileValidator;
@@ -55,16 +53,18 @@ public class RegulationValidatorFactory {
 
   private final Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators;
   private final Map<RegulationFileType, RegulationValidator<Collection<File>>> groupRegulationTypeValidators;
+  private final Map<RegulationFileType, RegulationValidator<RegulationFiles>> globalRegulationTypeValidators;
 
   public RegulationValidatorFactory(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper, ObjectMapper jsonObjectMapper,
                                       RuleBook<Set<ValidationError>> settingsYamlRuleBook, RuleBook<Set<ValidationError>> mainLiquibaseRuleBook) {
     this.regulationTypeValidators = regulationTypeValidators(resourceLoader, yamlObjectMapper, jsonObjectMapper,
                 settingsYamlRuleBook, mainLiquibaseRuleBook);
     this.groupRegulationTypeValidators = regulationTypeGroupValidators();
+    this.globalRegulationTypeValidators = globalRegulationTypeValidators(yamlObjectMapper);
   }
 
   public RegulationValidator<RegulationFiles> newRegulationFilesValidator() {
-    return new RegulationFilesValidator(regulationTypeValidators, groupRegulationTypeValidators);
+    return new RegulationFilesValidator(regulationTypeValidators, groupRegulationTypeValidators, globalRegulationTypeValidators);
   }
 
   private Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper,
@@ -89,6 +89,27 @@ public class RegulationValidatorFactory {
     return Map.of(
         RegulationFileType.BPMN, newBpmnFileGroupValidator()
     );
+  }
+
+  private Map<RegulationFileType, RegulationValidator<RegulationFiles>> globalRegulationTypeValidators(
+          ObjectMapper yamlObjectMapper) {
+    return Map.of(
+            RegulationFileType.BP_AUTH_TO_BPMN, newBpAuthToProcessDefinitionIdsValidator(yamlObjectMapper),
+            RegulationFileType.BP_TREMBITA_TO_BPMN, newBpTrembitaToBpmnProcessDefinitionIdsValidator(yamlObjectMapper)
+
+    );
+  }
+
+  private RegulationValidator<RegulationFiles> newBpAuthToProcessDefinitionIdsValidator(ObjectMapper yamlObjectMapper) {
+    return decorateGlobalValidator(GlobalCompositeRegulationFilesValidator.builder()
+            .validator(new BpAuthToBpmnProcessExistenceValidator(yamlObjectMapper))
+            .build());
+  }
+
+  private RegulationValidator<RegulationFiles> newBpTrembitaToBpmnProcessDefinitionIdsValidator(ObjectMapper yamlObjectMapper) {
+    return decorateGlobalValidator(GlobalCompositeRegulationFilesValidator.builder()
+            .validator(new BpTrembitaToBpmnProcessExistenceValidator(yamlObjectMapper))
+            .build());
   }
 
   private RegulationValidator<Collection<File>> newBpmnFileGroupValidator() {
@@ -205,6 +226,12 @@ public class RegulationValidatorFactory {
       RegulationValidator<Collection<File>> validator) {
     return FileGroupValidatorLoggingDecorator.wrap(validator);
   }
+
+  private RegulationValidator<RegulationFiles> decorateGlobalValidator(
+          RegulationValidator<RegulationFiles> validator) {
+    return GlobalFileValidatorLoggingDecorator.wrap(validator);
+  }
+
   private RegulationValidator<File> newSettingsFileValidator(ObjectMapper jsonObjectMapper,
                                                              RuleBook<Set<ValidationError>> settingsYamlRuleBook) {
     return decorate(
