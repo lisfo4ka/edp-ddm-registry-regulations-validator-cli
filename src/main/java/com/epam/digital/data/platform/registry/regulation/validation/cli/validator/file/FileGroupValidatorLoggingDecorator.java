@@ -51,7 +51,7 @@ public class FileGroupValidatorLoggingDecorator implements RegulationValidator<C
       return Collections.emptySet();
     }
 
-    errors.forEach(error -> log.error(error.toString()));
+    log.error("[{}] regulation files FAILED group validation.", context.getRegulationFileType());
     return errors;
   }
 }

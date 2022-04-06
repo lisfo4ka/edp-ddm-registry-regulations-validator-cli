@@ -86,7 +86,9 @@ public class RegulationValidationCommandLineRunner implements CommandLineRunner 
       return;
     }
 
-    log.error("Registry regulation validation failure!");
+    log.error("Registry validation failed due to:");
+    errors.forEach(error -> log.error(error.toString()));
+
     systemExit.validationFailure();
   }
 

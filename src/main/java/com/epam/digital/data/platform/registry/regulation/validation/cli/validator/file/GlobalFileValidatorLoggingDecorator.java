@@ -44,12 +44,12 @@ public class GlobalFileValidatorLoggingDecorator implements RegulationValidator<
     var errors = this.validator.validate(regulationFiles, context);
 
     if (errors.isEmpty()) {
-      log.info("{} regulation files passed global validation successfully.",
+      log.info("[{}] regulation files passed global validation successfully.",
               context.getRegulationFileType());
       return errors;
     }
 
-    errors.forEach(error -> log.error(error.toString()));
+    log.error("[{}] regulation files FAILED global validation.", context.getRegulationFileType());
     return errors;
   }
 }

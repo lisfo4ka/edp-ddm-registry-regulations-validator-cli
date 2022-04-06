@@ -49,7 +49,7 @@ public class FileValidatorLoggingDecorator implements RegulationValidator<File> 
       return Collections.emptySet();
     }
 
-    errors.forEach(error -> log.error(error.toString()));
+    log.error("[{}] Regulation file FAILED validation.", regulationFile.getName());
     return errors;
   }
 }
