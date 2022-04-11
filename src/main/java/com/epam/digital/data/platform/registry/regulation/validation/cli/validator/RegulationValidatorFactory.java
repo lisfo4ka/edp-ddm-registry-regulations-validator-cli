@@ -193,7 +193,7 @@ public class RegulationValidatorFactory {
             .validator(new FileExistenceValidator())
             .validator(new FileExtensionValidator())
             .validator(new EmptyFileValidator())
-            .validator(new JsonSchemaFileValidator(FORMS_JSON_SCHEMA, resourceLoader, jsonObjectMapper))
+            .validator(new FormsFileValidator(FORMS_JSON_SCHEMA, resourceLoader, jsonObjectMapper))
             .build()
     );
   }
