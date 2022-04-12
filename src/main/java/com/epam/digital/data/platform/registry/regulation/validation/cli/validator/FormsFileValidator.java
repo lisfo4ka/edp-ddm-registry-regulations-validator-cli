@@ -24,6 +24,7 @@ import org.springframework.core.io.ResourceLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,8 @@ public class FormsFileValidator implements RegulationValidator<File> {
 
   @Override
   public Set<ValidationError> validate(File regulation, ValidationContext context) {
-    Set<ValidationError> validationResult = jsonSchemaFileValidator.validate(regulation, context);
+    Set<ValidationError> validationResult = new HashSet<>();
+    validationResult.addAll(jsonSchemaFileValidator.validate(regulation, context));
     validationResult.addAll(validateDuplications(regulation, context));
     return validationResult;
   }
