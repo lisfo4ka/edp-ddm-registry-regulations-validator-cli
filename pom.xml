@@ -16,20 +16,20 @@
 
   <groupId>com.epam.digital.data.platform</groupId>
   <artifactId>registry-regulations-validator-cli</artifactId>
-  <version>1.6.0-SNAPSHOT</version>
+  <version>1.6.0</version>
 
   <properties>
     <java.version>11</java.version>
     <log4j.version>2.17.0</log4j.version>
     <camunda.version>7.13.0</camunda.version>
-    <ddm-starter-logger.version>1.5.1-SNAPSHOT</ddm-starter-logger.version>
+    <ddm-starter-logger.version>1.6.0.1</ddm-starter-logger.version>
     <json-schema-validator.version>1.0.57</json-schema-validator.version>
     <guava.version>29.0-jre</guava.version>
     <commons-cli.version>1.4</commons-cli.version>
     <mockito.version>3.4.3</mockito.version>
     <spring.cloud.version>2021.0.0</spring.cloud.version>
     <rulebook.version>0.12</rulebook.version>
-    <liquibase.ext.version>1.5.0-SNAPSHOT</liquibase.ext.version>
+    <liquibase.ext.version>1.6.0.1</liquibase.ext.version>
 
     <start-class>com.epam.digital.data.platform.registry.regulation.validation.cli.RegulationValidatorCliApplication</start-class>
 
