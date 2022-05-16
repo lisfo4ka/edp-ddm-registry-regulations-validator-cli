@@ -27,7 +27,8 @@ public enum CommandLineArg {
   DMN("dmn-files"),
   FORMS("form-files"),
   SETTINGS("settings-files"),
-  LIQUIBASE("liquibase-files");
+  LIQUIBASE("liquibase-files"),
+  EXCERPTS("excerpt-folders");
 
   private final String argOptionName;
 

@@ -63,6 +63,8 @@ public class RegulationFilesValidator implements RegulationValidator<RegulationF
     regulationFiles.getSettingsFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.SETTINGS)));
 
     regulationFiles.getLiquibaseFiles().forEach(file -> errors.addAll(validate(file, RegulationFileType.LIQUIBASE)));
+    
+    errors.addAll(validateExcerptFiles(regulationFiles.getExcerptFiles()));
 
     errors.addAll(validateGlobalFiles(regulationFiles, RegulationFileType.BP_AUTH_TO_BPMN));
 
@@ -88,6 +90,13 @@ public class RegulationFilesValidator implements RegulationValidator<RegulationF
       var groupValidator = groupRegulationTypeValidators.get(RegulationFileType.BPMN);
       errors.addAll(groupValidator.validate(bpmnFiles, ValidationContext.of(RegulationFileType.BPMN)));
     }
+    return errors;
+  }
+
+  private Set<ValidationError> validateExcerptFiles(Collection<File> excerptFolders) {
+    Set<ValidationError> errors = Sets.newHashSet();
+    var groupValidator = groupRegulationTypeValidators.get(RegulationFileType.EXCERPTS);
+    errors.addAll(groupValidator.validate(excerptFolders, ValidationContext.of(RegulationFileType.EXCERPTS)));
     return errors;
   }
 }

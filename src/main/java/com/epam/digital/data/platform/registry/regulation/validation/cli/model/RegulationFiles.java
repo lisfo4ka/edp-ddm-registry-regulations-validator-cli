@@ -47,6 +47,8 @@ public class RegulationFiles {
   private Collection<File> settingsFiles = new ArrayList<>();
   @Default
   private Collection<File> liquibaseFiles = new ArrayList<>();
+  @Default
+  private Collection<File> excerptFiles = new ArrayList<>();
 
   public boolean isEmpty() {
     return bpTrembitaFiles.isEmpty()
@@ -58,6 +60,7 @@ public class RegulationFiles {
         && dmnFiles.isEmpty()
         && formFiles.isEmpty()
         && settingsFiles.isEmpty()
-        && liquibaseFiles.isEmpty();
+        && liquibaseFiles.isEmpty()
+        && excerptFiles.isEmpty();
   }
 }

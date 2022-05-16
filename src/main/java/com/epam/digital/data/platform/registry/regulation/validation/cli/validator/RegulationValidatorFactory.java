@@ -26,6 +26,12 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpmnFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpmnFileGroupUniqueProcessIdValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.dmn.DmnFileValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.excerpt.ExcerptTemplateUniqueNameValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.EmptyFileValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileExistenceValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileExtensionValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileGroupValidatorLoggingDecorator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.FileValidatorLoggingDecorator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.*;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.json.JsonSchemaFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.mainliquibase.MainLiquibaseRulesValidator;
@@ -39,7 +45,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
 import org.springframework.core.io.ResourceLoader;
 
 public class RegulationValidatorFactory {
@@ -68,8 +73,8 @@ public class RegulationValidatorFactory {
   }
 
   private Map<RegulationFileType, RegulationValidator<File>> regulationTypeValidators(ResourceLoader resourceLoader, ObjectMapper yamlObjectMapper,
-                                                                                      ObjectMapper jsonObjectMapper, RuleBook<Set<ValidationError>> settingsYamlRuleBook,
-                                                                                      RuleBook<Set<ValidationError>> mainLiquibaseRuleBook) {
+      ObjectMapper jsonObjectMapper, RuleBook<Set<ValidationError>> settingsYamlRuleBook,
+      RuleBook<Set<ValidationError>> mainLiquibaseRuleBook) {
     return Map.of(
         RegulationFileType.BP_AUTH, newBpAuthFileValidator(resourceLoader, yamlObjectMapper),
         RegulationFileType.BP_TREMBITA, newBpTrembitaFileValidator(resourceLoader, yamlObjectMapper),
@@ -87,7 +92,8 @@ public class RegulationValidatorFactory {
 
   private Map<RegulationFileType, RegulationValidator<Collection<File>>> regulationTypeGroupValidators() {
     return Map.of(
-        RegulationFileType.BPMN, newBpmnFileGroupValidator()
+        RegulationFileType.BPMN, newBpmnFileGroupValidator(),
+        RegulationFileType.EXCERPTS, newExcerptGroupValidator()
     );
   }
 
@@ -116,6 +122,14 @@ public class RegulationValidatorFactory {
     return decorateGroupValidator(
         CompositeFileGroupValidator.builder()
             .validator(new BpmnFileGroupUniqueProcessIdValidator())
+            .build()
+    );
+  }
+
+  private RegulationValidator<Collection<File>> newExcerptGroupValidator() {
+    return decorateGroupValidator(
+        CompositeFileGroupValidator.builder()
+            .validator(new ExcerptTemplateUniqueNameValidator())
             .build()
     );
   }

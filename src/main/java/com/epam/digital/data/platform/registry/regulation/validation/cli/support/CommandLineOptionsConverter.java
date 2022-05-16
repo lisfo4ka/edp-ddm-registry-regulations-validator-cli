@@ -39,6 +39,7 @@ public class CommandLineOptionsConverter {
         .formFiles(getFilesIfAny(CommandLineArg.FORMS, options))
         .settingsFiles(getFilesIfAny(CommandLineArg.SETTINGS, options))
         .liquibaseFiles(getFilesIfAny(CommandLineArg.LIQUIBASE, options))
+        .excerptFiles(getFilesIfAny(CommandLineArg.EXCERPTS, options))
         .build();
   }
 

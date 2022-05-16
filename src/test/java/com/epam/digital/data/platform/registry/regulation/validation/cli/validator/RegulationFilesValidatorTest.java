@@ -42,7 +42,9 @@ public class RegulationFilesValidatorTest {
     RegulationValidator<File> formsFileValidator = mock(RegulationValidator.class);
     RegulationValidator<File> bpmnFileValidator = mock(RegulationValidator.class);
     RegulationValidator<File> dmnFileValidator = mock(RegulationValidator.class);
+    RegulationValidator<File> excerptFilesValidator = mock(RegulationValidator.class);
     RegulationValidator<Collection<File>> bpmnFilesValidator = mock(RegulationValidator.class);
+    RegulationValidator<Collection<File>> excerptsFilesValidator = mock(RegulationValidator.class);
     RegulationValidator<RegulationFiles> bpAuthToBpmnRegulationValidator = mock(RegulationValidator.class);
     RegulationValidator<RegulationFiles> bpTrembitaToBpmnRegulationValidator = mock(RegulationValidator.class);
 
@@ -53,10 +55,12 @@ public class RegulationFilesValidatorTest {
         RegulationFileType.GLOBAL_VARS, globalVarsFileValidator,
         RegulationFileType.FORMS, formsFileValidator,
         RegulationFileType.BPMN, bpmnFileValidator,
-        RegulationFileType.DMN, dmnFileValidator
+        RegulationFileType.DMN, dmnFileValidator,
+        RegulationFileType.EXCERPTS, excerptFilesValidator
     );
     var groupValidators = Map.of(
-        RegulationFileType.BPMN, bpmnFilesValidator
+        RegulationFileType.BPMN, bpmnFilesValidator,
+        RegulationFileType.EXCERPTS, excerptsFilesValidator
     );
 
     var globalRegulationValidators = Map.of(
@@ -74,6 +78,7 @@ public class RegulationFilesValidatorTest {
         .formFiles(singleFile())
         .bpmnFiles(singleFile())
         .dmnFiles(singleFile())
+        .excerptFiles(singleFile())
         .build();
 
     regulationFilesValidator.validate(regulationFiles, ValidationContext.empty());
@@ -86,6 +91,7 @@ public class RegulationFilesValidatorTest {
     verify(bpmnFileValidator, times(1)).validate(any(), any());
     verify(dmnFileValidator, times(1)).validate(any(), any());
     verify(bpmnFilesValidator, times(1)).validate(any(), any());
+    verify(excerptsFilesValidator, times(1)).validate(any(), any());
   }
 
   private ArrayList<File> singleFile() {

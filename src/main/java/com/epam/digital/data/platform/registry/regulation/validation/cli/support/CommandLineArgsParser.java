@@ -131,6 +131,13 @@ public class CommandLineArgsParser {
         .build());
 
     options.addOption(Option.builder()
+        .longOpt(CommandLineArg.EXCERPTS.getArgOptionName())
+        .hasArgs()
+        .valueSeparator(',')
+        .desc("Folders that contain excerpts in different formats")
+        .build());
+
+    options.addOption(Option.builder()
         .longOpt(CommandLineArg.GLOBAL_VARS.getArgOptionName())
         .numberOfArgs(1)
         .desc("Global variables regulation files (accepts multiple values separated by ',')")
