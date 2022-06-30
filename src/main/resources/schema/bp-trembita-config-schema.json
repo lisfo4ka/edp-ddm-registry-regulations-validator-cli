@@ -185,10 +185,122 @@
       "required": [
         "registries"
       ]
+    },
+    "external-systems": {
+      "$ref": "#/$defs/external-systems"
     }
   },
   "additionalProperties": false,
   "required": [
     "trembita-exchange-gateway"
-  ]
+  ],
+  "$defs": {
+    "external-systems": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/external-system"
+      }
+    },
+    "external-system": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "pattern": "^https?://.+$"
+        },
+        "methods": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/external-system-method"
+          }
+        },
+        "auth": {
+          "$ref": "#/$defs/external-system-auth"
+        }
+      }
+    },
+    "external-system-method": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "GET",
+            "HEAD",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "OPTIONS",
+            "TRACE"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "method"
+      ]
+    },
+    "external-system-auth": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "BASIC"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "PARTNER_TOKEN"
+              ]
+            }
+          },
+          "required": [
+            "partner-token-auth-url",
+            "token-json-path"
+          ]
+        }
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "BASIC",
+            "PARTNER_TOKEN"
+          ]
+        },
+        "secret-name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "partner-token-auth-url": {
+          "type": "string",
+          "pattern": "^https?://.+$"
+        },
+        "token-json-path": {
+          "type": "string",
+          "pattern": "^\\$\\..+$"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "secret-name"
+      ]
+    }
+  }
 }
