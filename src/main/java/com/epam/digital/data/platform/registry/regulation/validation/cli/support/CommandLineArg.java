@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 EPAM Systems.
+ * Copyright 2023 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,11 @@ public enum CommandLineArg {
   INBOX_NOTIFICATION_TEMPLATE("inbox-notification-template-folder"),
   DIIA_NOTIFICATION_TEMPLATE("diia-notification-template-folder"),
   BP_GROUPING("bp-grouping-files"),
-  MOCK_INTEGRATIONS("mock-integration-files");
+  MOCK_INTEGRATIONS("mock-integration-files"),
+  REPORTS_FOLDERS("report-folders"),
+  FILES("file"),
+  FILES_DETAILED("file-detailed"),
+  REPORTS("reports-files");
 
   private final String argOptionName;
 

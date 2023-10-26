@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2023 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package com.epam.digital.data.platform.registry.regulation.validation.cli;
+package com.epam.digital.data.platform.registry.regulation.validation.cli.model;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.File;
+import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@SpringBootApplication
-public class RegulationValidatorCliApplication {
+@Data
+public class BpRoleConfiguration implements RegulationConfiguration {
 
-  public static void main(String[] args) {
-    SpringApplication.run(RegulationValidatorCliApplication.class, args);
+  @JsonIgnore
+  private File regulationFile;
+
+  private List<Role> roles;
+
+  @Data
+  @EqualsAndHashCode(of = {"name"})
+  public static class Role {
+    private String name;
+    private String description;
   }
+
 }

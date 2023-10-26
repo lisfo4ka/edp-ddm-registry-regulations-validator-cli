@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 EPAM Systems.
+ * Copyright 2023 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,11 +44,16 @@ class RegulationFilesValidatorTest {
     RegulationValidator<File> dmnFileValidator = mock(RegulationValidator.class);
     RegulationValidator<File> excerptFilesValidator = mock(RegulationValidator.class);
     RegulationValidator<Collection<File>> bpmnFilesValidator = mock(RegulationValidator.class);
+    RegulationValidator<Collection<File>> reportFilesValidator = mock(RegulationValidator.class);
     RegulationValidator<Collection<File>> excerptsFilesValidator = mock(RegulationValidator.class);
     RegulationValidator<RegulationFiles> bpAuthToBpmnRegulationValidator = mock(RegulationValidator.class);
     RegulationValidator<RegulationFiles> bpTrembitaToBpmnRegulationValidator = mock(RegulationValidator.class);
     RegulationValidator<File> bpGroupingUniqueNameValidator = mock(RegulationValidator.class);
     RegulationValidator<RegulationFiles> bpGroupingProcessDefinitionIdValidator = mock(RegulationValidator.class);
+    RegulationValidator<RegulationFiles> bpInputValidator = mock(RegulationValidator.class);
+    RegulationValidator<RegulationFiles> bpAuthToBpmnRoleExistenceValidator = mock(RegulationValidator.class);
+    RegulationValidator<RegulationFiles> reportRoleExistenceValidator = mock(RegulationValidator.class);
+    RegulationValidator<RegulationFiles> formToSearchConditionExistenceValidator = mock(RegulationValidator.class);
 
     var validators = Map.of(
         RegulationFileType.BP_AUTH, bpAuthFileValidator,
@@ -63,13 +68,18 @@ class RegulationFilesValidatorTest {
     );
     var groupValidators = Map.of(
         RegulationFileType.BPMN, bpmnFilesValidator,
-        RegulationFileType.EXCERPTS, excerptsFilesValidator
+        RegulationFileType.EXCERPTS, excerptsFilesValidator,
+        RegulationFileType.REPORTS, reportFilesValidator
     );
 
     var globalRegulationValidators = Map.of(
             RegulationFileType.BP_AUTH_TO_BPMN, bpAuthToBpmnRegulationValidator,
             RegulationFileType.BP_TREMBITA_TO_BPMN, bpTrembitaToBpmnRegulationValidator,
-            RegulationFileType.BP_GROUPING_TO_BPMN, bpGroupingProcessDefinitionIdValidator
+            RegulationFileType.BP_GROUPING_TO_BPMN, bpGroupingProcessDefinitionIdValidator,
+            RegulationFileType.BPMN, bpInputValidator,
+            RegulationFileType.BP_ROLE_EXISTENCE, bpAuthToBpmnRoleExistenceValidator,
+            RegulationFileType.REPORT_ROLE_EXISTENCE, reportRoleExistenceValidator,
+            RegulationFileType.FORM_TO_SC, formToSearchConditionExistenceValidator
     );
 
     var regulationFilesValidator = new RegulationFilesValidator(validators, groupValidators, globalRegulationValidators);
@@ -84,6 +94,7 @@ class RegulationFilesValidatorTest {
         .dmnFiles(singleFile())
         .excerptFiles(singleFile())
         .bpGroupingFiles(singleFile())
+        .reportsFolders(singleFile())
         .build();
 
     regulationFilesValidator.validate(regulationFiles, ValidationContext.empty());
@@ -98,6 +109,7 @@ class RegulationFilesValidatorTest {
     verify(bpmnFilesValidator, times(1)).validate(any(), any());
     verify(excerptsFilesValidator, times(1)).validate(any(), any());
     verify(bpGroupingUniqueNameValidator, times(1)).validate(any(), any());
+    verify(formToSearchConditionExistenceValidator, times(1)).validate(any(), any());
   }
 
   private ArrayList<File> singleFile() {

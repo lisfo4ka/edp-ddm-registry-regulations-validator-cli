@@ -25,6 +25,7 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.support
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpgrouping.BpGroupingProcessDefinitionIdValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpgrouping.BpGroupingUniqueNameValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpAuthToBpmnProcessExistenceValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpAuthToBpmnRoleExistenceValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpTrembitaToBpmnProcessExistenceValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpmnFileGroupUniqueProcessIdValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.bpmn.BpmnFileInputsValidator;
@@ -42,9 +43,12 @@ import com.epam.digital.data.platform.registry.regulation.validation.cli.validat
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.GlobalFileValidatorLoggingDecorator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.IsNotDirectoryFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.file.ValidationSkipOnDependentDecorator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.form.FormToSearchConditionExistenceValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.json.JsonSchemaFileValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.mainliquibase.MainLiquibaseRulesValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.registrysettings.RegistrySettingsFileValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.report.ReportGroupUniqueNameValidator;
+import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.report.ReportRoleExistenceValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpAuthProcessUniquenessValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.typed.BpTrembitaProcessUniquenessValidator;
 import com.epam.digital.data.platform.registry.regulation.validation.cli.validator.var.GlobalVarsFileValidator;
@@ -52,6 +56,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,6 +80,12 @@ public class RegulationValidatorFactory {
 
   @Value("${element-template-path}")
   private String elementTemplatePath;
+
+  @Value("${officer-permissions-file}")
+  private String officerPermissionsFile;
+
+  @Value("${default-roles}")
+  private List<String> defaultRoles;
 
   private final ResourceLoader resourceLoader;
   private final ObjectMapper yamlObjectMapper;
@@ -125,13 +136,15 @@ public class RegulationValidatorFactory {
         newDiiaNotificationTemplateValidator());
     validators.put(RegulationFileType.BP_GROUPING, newBpGroupValidator());
     validators.put(RegulationFileType.MOCK_INTEGRATIONS, newMockIntegrationsFileValidator());
+    validators.put(RegulationFileType.REPORTS, newReportsFileValidator());
     return validators;
   }
 
   private Map<RegulationFileType, RegulationValidator<Collection<File>>> regulationTypeGroupValidators() {
     return Map.of(
         RegulationFileType.BPMN, newBpmnFileGroupValidator(),
-        RegulationFileType.EXCERPTS, newExcerptGroupValidator()
+        RegulationFileType.EXCERPTS, newExcerptGroupValidator(),
+        RegulationFileType.REPORTS, newReportFileGroupValidator()
     );
   }
 
@@ -143,8 +156,15 @@ public class RegulationValidatorFactory {
         RegulationFileType.BP_TREMBITA_TO_BPMN,
         newBpTrembitaToBpmnProcessDefinitionIdsValidator(yamlObjectMapper),
         RegulationFileType.BP_GROUPING_TO_BPMN,
-        newBpGroupingToBpmnProcessDefinitionIdsValidator(yamlObjectMapper)
-
+        newBpGroupingToBpmnProcessDefinitionIdsValidator(yamlObjectMapper),
+        RegulationFileType.BPMN,
+        newBpmnFileInputsValidator(elementTemplatePath, defaultRoles),
+        RegulationFileType.BP_ROLE_EXISTENCE,
+        newBpAuthToBpmnRoleExistenceValidator(),
+        RegulationFileType.REPORT_ROLE_EXISTENCE,
+        newReportRoleExistenceValidator(),
+        RegulationFileType.FORM_TO_SC,
+        newFormToSearchConditionExistenceValidator()
     );
   }
 
@@ -152,6 +172,13 @@ public class RegulationValidatorFactory {
       ObjectMapper yamlObjectMapper) {
     return decorateGlobalValidator(GlobalCompositeRegulationFilesValidator.builder()
         .validator(new BpAuthToBpmnProcessExistenceValidator(yamlObjectMapper))
+        .build());
+  }
+
+  private RegulationValidator<RegulationFiles> newBpmnFileInputsValidator(
+      String elementTemplatePath, List<String> defaultRoles) {
+    return decorateGlobalValidator(GlobalCompositeRegulationFilesValidator.builder()
+        .validator(new BpmnFileInputsValidator(elementTemplatePath, defaultRoles))
         .build());
   }
 
@@ -182,6 +209,14 @@ public class RegulationValidatorFactory {
         CompositeFileGroupValidator.builder()
             .validator(new ExcerptTemplateUniqueNameValidator())
             .build()
+    );
+  }
+
+  private RegulationValidator<Collection<File>> newReportFileGroupValidator() {
+    return decorateGroupValidator(
+            CompositeFileGroupValidator.builder()
+                    .validator(new ReportGroupUniqueNameValidator(jsonObjectMapper))
+                    .build()
     );
   }
 
@@ -274,7 +309,6 @@ public class RegulationValidatorFactory {
             .validator(new FileExistenceValidator())
             .validator(new FileExtensionValidator())
             .validator(new BpmnFileValidator())
-            .validator(new BpmnFileInputsValidator(elementTemplatePath))
             .build()
     );
   }
@@ -366,6 +400,15 @@ public class RegulationValidatorFactory {
             .build());
   }
 
+  private RegulationValidator<File> newReportsFileValidator() {
+    return decorate(
+            CompositeFileValidator.builder()
+                    .validator(new FileExistenceValidator())
+                    .validator(new FileExtensionValidator())
+                    .validator(new EmptyFileValidator())
+                    .build());
+  }
+
   private RegulationValidator<File> decorate(RegulationValidator<File> validator) {
     return FileValidatorLoggingDecorator.wrap(validator);
   }
@@ -424,5 +467,24 @@ public class RegulationValidatorFactory {
             .validator(new BpGroupingUniqueNameValidator(yamlObjectMapper))
             .build()
     );
+  }
+
+  private RegulationValidator<RegulationFiles> newBpAuthToBpmnRoleExistenceValidator() {
+    return decorateGlobalValidator(GlobalCompositeRegulationFilesValidator.builder()
+        .validator(new BpAuthToBpmnRoleExistenceValidator(yamlObjectMapper, defaultRoles))
+        .build());
+  }
+
+  private RegulationValidator<RegulationFiles> newReportRoleExistenceValidator() {
+    return decorateGlobalValidator(GlobalCompositeRegulationFilesValidator.builder()
+        .validator(new ReportRoleExistenceValidator(yamlObjectMapper, officerPermissionsFile,
+            defaultRoles))
+        .build());
+  }
+
+  private RegulationValidator<RegulationFiles> newFormToSearchConditionExistenceValidator() {
+    return decorateGlobalValidator(GlobalCompositeRegulationFilesValidator.builder()
+        .validator(new FormToSearchConditionExistenceValidator(jsonObjectMapper))
+        .build());
   }
 }
